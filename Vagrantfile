@@ -12,12 +12,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "docker" do |d|
     d.build_image "/vagrant", args: "-t codewars/cli-runner"
+    d.build_image "/vagrant/jvm-runner", args: "-t codewars/jvm-runner"
   end
 
   config.vm.provider "virtualbox" do |v|
     v.memory = 1536
     v.name = "codewars_runner_host"
     config.vm.provision "shell", path: 'setup/dev.sh'
+  end
+
+  # Provision Using Puppet
+  config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = 'puppet/manifests'
+    puppet.module_path = ['puppet/modules/']
+    puppet.options = ['--verbose']
   end
 
   # Setting up a static network on 10.100.150.0 class C subnet
