@@ -17,27 +17,24 @@ describe( 'c# runner', function(){
         {
             runner.run({language: 'csharp', solutionFile: 'test/csharp/solution1.cs'}, function (buffer)
             {
+                console.log(buffer.stdout);
                 expect(buffer.stdout).to.equal('Hello World\n');
                 done();
             });
         });
 
-//        it('should handle fork bomb', function (done)
-//        {
-//            runner.run({language: 'csharp', solutionFile: 'test/csharp/solution2.cs'}, function (buffer)
-//            {
-//                expect(buffer.stdout).to.contain('System.SystemException: Thread creation failed');
-//                done();
-//            });
-//        });
-//
-//        it('should block network connections', function (done)
-//        {
-//            runner.run({language: 'csharp', solutionFile: 'test/csharp/solution3.cs'}, function (buffer)
-//            {
-//                expect(buffer.stdout).to.contain('System.Net.WebException:');
-//                done();
-//            });
-//        });
+        it('should handle basic nunit tests', function (done)
+        {
+            require('../../lib/opts').process({language: 'csharp', solutionFile: 'test/csharp/Account.cs', fixtureFile: 'test/csharp/AccountTest.cs'}, function(opts)
+            {
+                runner.run(opts, function (buffer)
+                {
+                    console.log(buffer.stdout);
+                    assert(buffer.stdout.indexOf('<FAILED::>') != -1);
+                    assert(buffer.stdout.indexOf('<PASSED::>') != -1);
+                    done();
+                });
+            });
+        });
     });
 });
