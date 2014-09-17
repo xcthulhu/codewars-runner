@@ -6,6 +6,7 @@
 FROM codewars/runner-base
 
 # Install Mono
+RUN apt-get update
 RUN apt-get install -y mono-complete
 
 # Install F#
@@ -20,13 +21,15 @@ RUN wget 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=n
 RUN mono NuGet.exe update -self
 RUN mono NuGet.exe install xunit ; \
     mono NuGet.exe install xunit.extensions ; \
-    mono NuGet.exe install ; \
     mono NuGet.exe install log4net ; \
     mono NuGet.exe install mongocsharpdriver ; \
-    mono NuGet.exe install System.Data.SQLite
+    mono NuGet.exe install System.Data.SQLite  
 
 RUN mono NuGet.exe install NUnit ; \
-    mono NuGet.exe install NUnit.Runners ; \
+    mono NuGet.exe install NUnit.Runners 
+
+RUN find . -name "*.dll" -exec ln -sf {} \;
+RUN find . -name "*.exe" -exec ln -sf {} \;
 
 # ADD cli-runner and install node deps
 ADD . /codewars
