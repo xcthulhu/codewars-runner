@@ -35,6 +35,7 @@
     `(thunk-timeout (fn [] ~@body) ~ms))
 
 (defmacro catch-and-wrap
+  "Run a command, catch if it throws and write an error"
   [& body]
   `(try
      ~@body
@@ -49,9 +50,11 @@
           :result nil}))))
 
 (defmacro wrap-result
+  "Run a command, catch its stdout and stderr, and add them as fields in a hash-map containing the results"
   [& body]
   `(let [original-java-out# (PrintStream. System/out)
          original-java-err# (PrintStream. System/err)
+         ; TODO: Wish this wasn't so complicated
          clj-out# (StringWriter.)
          clj-err# (StringWriter.)
          out# (ByteArrayOutputStream.)
