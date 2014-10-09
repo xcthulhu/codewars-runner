@@ -7,7 +7,7 @@
            [java.net URLClassLoader]
            [javax.tools ToolProvider]
            [java.io ByteArrayOutputStream]
-           [org.junit.runner JUnitCore]
+           [org.junit.runner JUnitCore Result]
            [codewars.java CwRunListener]))
 
 (defn- compile!
@@ -60,6 +60,14 @@
         (doto (.setAccessible true))
         (.invoke nil (into-array [(into-array String [])])))))
 
+(defn junit-result-to-map
+  [^Result result]
+  {:failures (.getFailureCount result)
+   :ignore (.getIgnoreCount result)
+   :runs (.getRunCount result)
+   :run-time (.getRunTime result)
+   :successful? (.wasSuccessful result)})
+
 (defmethod full-project "java"
   [{:keys [:fixture :setup :solution]}]
   (let [dir (TempDir/create "java")
@@ -68,4 +76,4 @@
         solution (util/write-code! "java" dir solution)
         files (file-names fixture setup solution)]
     (apply compile! files)
-    (->> fixture :class-name (load-class dir) run-junit-tests)))
+    (->> fixture :class-name (load-class dir) run-junit-tests junit-result-to-map)))

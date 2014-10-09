@@ -4,14 +4,13 @@
             [cheshire.core :as json]))
 
 (deftest java-basic
-  (testing "-main can handle a very basic java solution and fixture"
+  (testing "-main can handle a very basic java solution and fixture (which is bogus so it insta-fails)"
     (with-in-str
       (json/generate-string
        {:language "java"
         :solution "class Foo {}"
         :fixture "class Bar {}"})
-      (is (= org.junit.runner.Result (class (:result (-main)))))
-      )))
+      (is (not (get-in (-main) [:result :successful?]))))))
 
 (deftest java-solution-only
   (testing "-main can handle a java solution without a fixture"
@@ -60,7 +59,10 @@
                         Solution s = new Solution();
                          assertEquals(\"wow\", 3, s.testthing());
                          System.out.println(\"test out\");}}"})
-      (let [test-out-string (:stdout (-main))]
+      (let [test-data (-main)
+            test-out-string (:stdout test-data)]
+        (is (get-in test-data [:result :successful?]))
+        (is (= 1 (get-in test-data [:result :runs])))
         (is (.contains test-out-string "<DESCRIBE::>myTestFunction(TestFixture)"))
         (is (.contains test-out-string "test out"))
         (is (.contains test-out-string "<PASSED::>Test Passed<:LF:>"))))))
