@@ -1,31 +1,36 @@
 (ns codewars.core
   (:require [cheshire.core :as json]
             [codewars.runners :refer [run]]
-            [codewars.kill-switch :refer [with-timeout]]
-            [environ.core :refer [env]]
+            [com.keminglabs.zmq-async.core :refer [register-socket!]]
+            [clojure.core.async :refer [>! <! go chan sliding-buffer close!]]
+            [cheshire.core :as json]
             [codewars.runners.groovy]
             [codewars.runners.clojure]
             [codewars.runners.java])
   (:gen-class))
 
-(defn- flush-out [val]
-  (flush)
-  val)
+(def ^:private zmq-addr "Address of the ZMQ socket"
+  "inproc://zmq-intercom")
 
-(defn- fail [e]
-  (println (str "<ERROR::>" (.getMessage e) "<:LF:>"))
-  (let [sw (java.io.StringWriter.)]
-    (.printStackTrace e (java.io.PrintWriter. sw))
-    (-> (str sw)
-        (clojure.string/replace "\n" "<:LF:>")
-        println))
-  (System/exit 1))
+(defn- listen
+  "Listen for jobs off of a ZMQ connection, runs jobs and replies"
+  []
+  (let [data-in (chan)
+        data-out (chan)]
+    (register-socket! {:in data-in
+                       :out data-out
+                       :socket-type :rep
+                       :configurator (fn [socket] (.bind socket zmq-addr))})
+    (loop []
+      (->> (<! data-out)
+           json/parse-string
+           run
+           json/generate-string
+           (>! data-in))
+      (recur))))
 
 (defn -main
   "Listens to *in* for a JSON message, parses it and calls the appropriate runner"
   [& _]
-  (let [ms ((fnil #(Integer/parseInt %) "5000") (env :timeout))
-        input (json/parse-stream *in* true)]
-    (try
-      (flush-out (with-timeout ms (run input)))
-      (catch Exception e (fail e)))))
+  (let [input (json/parse-stream *in* true)]
+    (run input)))

@@ -1,9 +1,7 @@
 (ns codewars.runners.java-test
   (:require [clojure.test :refer :all]
             [codewars.core :refer [-main] :as core]
-            [codewars.test.utils :refer :all]
             [cheshire.core :as json]))
-
 
 (deftest java-basic
   (testing "-main can handle a very basic java solution and fixture"
@@ -12,7 +10,8 @@
        {:language "java"
         :solution "class Foo {}"
         :fixture "class Bar {}"})
-      (is (= org.junit.runner.Result (class (-main)))))))
+      (is (= org.junit.runner.Result (class (:result (-main)))))
+      )))
 
 (deftest java-solution-only
   (testing "-main can handle a java solution without a fixture"
@@ -20,7 +19,7 @@
       (json/generate-string
        {:language "java"
         :solution "class FooFighters { static int main(String [] args) {return 1;} }"})
-      (is (= 1 (-main))))))
+      (is (= 1 (:result (-main)))))))
 
 
 (deftest java-solution-print
@@ -29,7 +28,7 @@
       (json/generate-string
        {:language "java"
         :solution "public class Hello {public static void main(String[] args) {System.out.print(\"Hellooo!\");}}"})
-      (is (= "Hellooo!" (with-java-out-str (-main)))))))
+      (is (= "Hellooo!" (:stdout (-main)))))))
 
 (deftest java-setup-code
   (testing "-main can handle a java solution and setup code"
@@ -42,7 +41,7 @@
         :solution "class HelloAgain {
                      static void main(String[] args) {
                          System.out.print(Beatles.sayHello());}}"})
-      (is (= "Hello, hello!" (with-java-out-str (-main)))))))
+      (is (= "Hello, hello!" (:stdout (-main)))))))
 
 (deftest java-test-fixture
   (testing "-main can handle a junit test"
@@ -61,7 +60,7 @@
                         Solution s = new Solution();
                          assertEquals(\"wow\", 3, s.testthing());
                          System.out.println(\"test out\");}}"})
-      (let [test-out-string (with-java-out-str (-main))]
+      (let [test-out-string (:stdout (-main))]
         (is (.contains test-out-string "<DESCRIBE::>myTestFunction(TestFixture)"))
         (is (.contains test-out-string "test out"))
         (is (.contains test-out-string "<PASSED::>Test Passed<:LF:>"))))))
@@ -84,7 +83,7 @@
                       Foo s = new Foo();
                       assertEquals(\"Failed Message\", 5, s.testthing());
                       System.out.println(\"Shouldn't get here\");}}"})
-      (let [test-out-string (with-java-out-str (-main))]
+      (let [test-out-string (:stdout (-main))]
         (is (.contains test-out-string "<DESCRIBE::>sadPath(TestForFailure)<:LF:>"))
         (is (.contains test-out-string "<FAILED::>Failed Message expected:"))
         (is (.contains test-out-string "<5> but was:<3>"))
@@ -99,8 +98,8 @@
         :solution "public class Solution {
                      public static void main(String[] args){
                        notdefinedgonnafail(\"42\");}}"})
-      (let [error-message
-            (with-redefs [core/fail #(-> % .getMessage)] (-main))]
+      (let [error-message (:stderr (-main))]
+        (is (not (nil? error-message)))
         (is (.contains error-message "error: cannot find symbol"))
         (is (.contains error-message "notdefinedgonnafail(\"42\");"))
         (is (.contains error-message "symbol:   method notdefinedgonnafail(String)"))
@@ -125,7 +124,7 @@
                          Sollution s = new Sollution();
                          assertEquals(\"wow\", 3, s.testthingy());
                          System.out.println(\"test out\");}}"})
-      (let [test-out-string (with-java-out-str (-main))]
+      (let [test-out-string (:stdout (-main))]
         (is (.contains test-out-string "<DESCRIBE::>solutionAndSetupAndFixture(NineYards)<:LF:>"))
         (is (.contains test-out-string "test out"))
         (is (.contains test-out-string "<PASSED::>Test Passed<:LF:>"))))))
@@ -145,6 +144,6 @@
                       Assert.assertEquals(\"The two values should multiply together\", 50, Java.multiply(10, 5));
                     }
                   }"})
-      (let [test-out-string (with-java-out-str (-main))]
+      (let [test-out-string (:stdout (-main))]
         (is (.contains test-out-string "<DESCRIBE::>testMultiply(JavaTest)<:LF:>"))
         (is (.contains test-out-string "<PASSED::>Test Passed<:LF:>"))))))

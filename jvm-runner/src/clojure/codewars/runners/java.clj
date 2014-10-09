@@ -2,7 +2,7 @@
   (:require [codewars.runners :refer [solution-only full-project]]
             [codewars.clojure.test]
             [clojure.java.io :as io]
-            [codewars.util :refer [write-code!]])
+            [codewars.util :as util])
   (:import [codewars.java TempDir]
            [java.net URLClassLoader]
            [javax.tools ToolProvider]
@@ -37,8 +37,7 @@
   [fixture-class]
   (let [runner (JUnitCore.)]
     (.addListener runner (CwRunListener.))
-    (codewars.clojure.test/time
-     (.run runner (into-array [fixture-class])))))
+    (.run runner (into-array [fixture-class]))))
 
 (defn- file-names
   "Filter a sequence of files writen by write-code! and output their names"
@@ -50,8 +49,8 @@
 (defmethod solution-only "java"
   [{:keys [:setup :solution]}]
   (let [dir (TempDir/create "java")
-        setup (when (not (empty? setup)) (write-code! "java" dir setup))
-        solution (write-code! "java" dir solution)
+        setup (when (not (empty? setup)) (util/write-code! "java" dir setup))
+        solution (util/write-code! "java" dir solution)
         files (file-names setup solution)]
     (apply compile! files)
     (-> solution
@@ -64,9 +63,9 @@
 (defmethod full-project "java"
   [{:keys [:fixture :setup :solution]}]
   (let [dir (TempDir/create "java")
-        fixture (write-code! "java" dir fixture)
-        setup (when (not (empty? setup)) (write-code! "java" dir setup))
-        solution (write-code! "java" dir solution)
+        fixture (util/write-code! "java" dir fixture)
+        setup (when (not (empty? setup)) (util/write-code! "java" dir setup))
+        solution (util/write-code! "java" dir solution)
         files (file-names fixture setup solution)]
     (apply compile! files)
     (->> fixture :class-name (load-class dir) run-junit-tests)))

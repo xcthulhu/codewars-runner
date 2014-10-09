@@ -9,8 +9,7 @@
   `(->
     (with-out-str ~@body)
     (clojure.string/replace "\n" "<:LF:>")
-    (println)
-    clojure.test/with-test-out))
+    println))
 
 (defn- print-context []
   (when (seq *testing-contexts*)
@@ -69,16 +68,8 @@
 
 (defmethod codewars-report :summary [_])
 
-(defmacro time
-  [expr]
-  `(let [start# (System/nanoTime)
-         ret# ~expr]
-     (println (str "<COMPLETEDIN::>"
-                   (-> (System/nanoTime) (- start#) double (/ 1000000.0))
-                   " ms<:LF:>"))
-     ret#))
-
-(defn run-tests [ & namespaces ]
-  (binding [clojure.test/report
-            codewars.clojure.test/codewars-report]
-    (time (apply clojure.test/run-tests namespaces))))
+(defn run-tests
+  "Run tests using the codewars formatter, and wrap the results"
+  [ & namespaces ]
+  (binding [clojure.test/report codewars.clojure.test/codewars-report]
+    (apply clojure.test/run-tests namespaces)))

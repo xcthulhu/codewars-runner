@@ -1,4 +1,5 @@
-(ns codewars.runners)
+(ns codewars.runners
+  (:require [codewars.util :refer [wrap-result with-timeout timeout]]))
 
 (defmulti solution-only :language)
 (defmulti full-project :language)
@@ -17,6 +18,8 @@
 (defn run
   "Run solution code or a test-fixture."
   [opts]
-  (if (nil? (:fixture opts))
-    (solution-only opts)
-    (full-project opts)))
+  (wrap-result
+   (with-timeout timeout
+     (if (contains? opts :fixture)
+       (full-project opts)
+       (solution-only opts)))))
