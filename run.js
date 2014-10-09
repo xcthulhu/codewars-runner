@@ -68,10 +68,4 @@ var config = require('./lib/config' ),
         .help('This utility will run code in a specified language, using the specified testing suite.')
         .parse();
 
-require('./lib/opts').process(opts, function(opts) {
-    if(opts) require('./lib/runners/' + opts.language + '.js').run(opts);
-});
-
-
-
-
+require('./lib/opts').run(opts);
