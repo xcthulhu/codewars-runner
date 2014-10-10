@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/coffeescript');
+var runner = require('../runner');
 
 
 describe( 'coffeescript runner', function(){

@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/scala');
+var runner = require('../runner');
 
 describe('scala runner', function () {
     describe('.run', function () {

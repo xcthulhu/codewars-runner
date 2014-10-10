@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/nasm');
+var runner = require('../runner');
 
 
 describe('nasm runner', function () {

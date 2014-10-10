@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/lisp');
+var runner = require('../runner');
 
 
 describe( 'lisp runner', function(){

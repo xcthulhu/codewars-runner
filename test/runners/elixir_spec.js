@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/elixir');
+var runner = require('../runner');
 
 
 describe( 'elixir runner', function(){

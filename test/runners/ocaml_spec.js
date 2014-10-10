@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/ocaml');
+var runner = require('../runner');
 
 
 describe( 'ocaml runner', function(){

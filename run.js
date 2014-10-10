@@ -1,5 +1,4 @@
-var config = require('./lib/config' ),
-    opts = require("nomnom")
+var opts = require("nomnom")
         .options({
             solution: {
               abbr: 'c',
@@ -41,11 +40,11 @@ var config = require('./lib/config' ),
                 flag: true,
                 help: 'Print version and exit',
                 callback: function () {
-                    return config.version;
+                    return require('./lib/config').version;
                 }
             }
         })
         .help('This utility will run code in a specified language, using the specified testing suite.')
         .parse();
 
-require('./lib/opts').run(opts);
+require('./lib/runner').run(opts);

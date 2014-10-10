@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/racket');
+var runner = require('../runner');
 
 
 describe( 'racket runner', function(){

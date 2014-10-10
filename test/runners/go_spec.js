@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/go');
+var runner = require('../runner');
 
 describe( 'go runner', function(){
     describe( '.run', function(){

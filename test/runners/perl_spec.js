@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/perl');
+var runner = require('../runner');
 
 
 describe( 'perl runner', function(){

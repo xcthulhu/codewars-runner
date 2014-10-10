@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/erlang');
+var runner = require('../runner');
 
 
 describe('erlang runner', function () {

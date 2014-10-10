@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/fsharp');
+var runner = require('../runner');
 
 
 describe( 'fsharp runner', function(){

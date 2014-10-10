@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/clojure');
+var runner = require('../runner');
 
 describe('clojure runner', function () {
     describe('.run', function () {

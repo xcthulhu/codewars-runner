@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/groovy');
+var runner = require('../runner');
 
 
 describe( 'groovy runner', function(){

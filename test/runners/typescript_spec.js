@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/typescript');
+var runner = require('../runner');
 
 
 describe( 'typescript runner', function(){
