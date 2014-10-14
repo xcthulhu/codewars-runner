@@ -4,13 +4,13 @@ var runner = require('../runner');
 describe( 'c runner', function(){
     describe( '.run', function(){
         it( 'should handle basic code evaluation', function(done){
-            var solution = ['#include <stdio.h>',
+            var code = ['#include <stdio.h>',
                             'int main() {',
                             '    printf("I think the next language codewars should support is PL/I.  Wikipedia says it\'s still used in production to this day; presumably in nursing homes?");',
                             '}',
                             ''].join('\n');
 
-            runner.run({language: 'c', solution: solution}, function(buffer) {
+            runner.run({language: 'c', code: code}, function(buffer) {
                 expect(buffer.stdout).to.equal("I think the next language codewars should support is PL/I.  Wikipedia says it\'s still used in production to this day; presumably in nursing homes?");
                 done();
             });
@@ -21,7 +21,7 @@ describe( 'c runner', function(){
                 setup: [
                     'int square(int a) { return a * a ; }'
                 ].join('\n'),
-                solution: [
+                code: [
                     '#include <stdio.h>',
                     'int square(int);',
                     'int main() {',
@@ -37,7 +37,7 @@ describe( 'c runner', function(){
             it('should be able to run a basic test', function (done) {
                 runner.run({
                     language: 'c',
-                    solution: [
+                    code: [
                         'int square(int a) { return a * a ; }'
                     ].join('\n'),
                     fixture: [
@@ -56,7 +56,7 @@ describe( 'c runner', function(){
             it('should be able to run a basic test', function (done) {
                 runner.run({
                     language: 'c',
-                    solution: [
+                    code: [
                         'int square(int a) { return a * a ; }'
                     ].join('\n'),
                     fixture: [

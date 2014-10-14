@@ -6,7 +6,7 @@ describe('nasm runner', function () {
     describe('.run', function () {
         it('should handle basic code evaluation (no libc)', function (done) {
             runner.run({language: 'nasm',
-                    solution: [
+                    code: [
                         '   global  _start',
                         '   section .text',
                         '_start:',
@@ -28,7 +28,7 @@ describe('nasm runner', function () {
         });
         it('should handle basic code evaluation (with libc)', function (done) {
             runner.run({language: 'nasm',
-                    solution: [
+                    code: [
                         '   global  main',
                         '   extern  puts',
                         '   section .text',

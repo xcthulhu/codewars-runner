@@ -5,7 +5,7 @@ var runner = require('../runner');
 describe('ruby runner', function () {
     describe('.run', function () {
         it('should handle basic code evaluation', function (done) {
-            runner.run({language: 'ruby', solution: 'puts 42'}, function (buffer) {
+            runner.run({language: 'ruby', code: 'puts 42'}, function (buffer) {
                 expect(buffer.stdout).to.equal('42\n');
                 done();
             });
@@ -14,14 +14,14 @@ describe('ruby runner', function () {
 
     describe('cw-2', function () {
         it('should handle a basic assertion', function (done) {
-            runner.run({language: 'ruby', solution: 'a = 1', fixture: 'Test.expect a == 1', testFramework: 'cw-2'}, function (buffer) {
+            runner.run({language: 'ruby', code: 'a = 1', fixture: 'Test.expect a == 1', testFramework: 'cw-2'}, function (buffer) {
                 expect(buffer.stdout).to.equal('<PASSED::>Test Passed\n');
                 done();
             });
         });
 
         it('should handle a basic description', function (done) {
-            runner.run({language: 'ruby', solution: 'a = 1', fixture: 'describe("test") { Test.expect a == 1 }', testFramework: 'cw-2'}, function (buffer) {
+            runner.run({language: 'ruby', code: 'a = 1', fixture: 'describe("test") { Test.expect a == 1 }', testFramework: 'cw-2'}, function (buffer) {
                 expect(buffer.stdout).to.contain('<DESCRIBE::>test\n<PASSED::>Test Passed\n<COMPLETEDIN::>');
                 expect(buffer.stdout).to.contain('ms');
                 done();
@@ -31,7 +31,7 @@ describe('ruby runner', function () {
         describe('error handling', function () {
             it('should handle a mix of failures and successes', function (done) {
                 runner.run({language: 'ruby',
-                    solution: 'a = 1',
+                    code: 'a = 1',
                     fixture: 'describe "test" do\n' +
                         'it("test1") { Test.expect(false) }\n' +
                         'it("test2") { Test.expect(true) }\n' +
@@ -45,7 +45,7 @@ describe('ruby runner', function () {
             });
             it('should gracefully handle custom errors', function (done) {
                 runner.run({language: 'ruby',
-                    solution: 'a = 1',
+                    code: 'a = 1',
                     fixture: 'describe "test" do\n' +
                         'it("test1") { raise "boom!" }\n' +
                         'it("test2") { Test.expect(true)}\n' +
@@ -59,7 +59,7 @@ describe('ruby runner', function () {
             });
             it('should gracefully handle reference errors', function (done) {
                 runner.run({language: 'ruby',
-                    solution: 'a = 1',
+                    code: 'a = 1',
                     fixture: 'describe "test" do\n' +
                         'it("test1") { a.idontexist() }\n' +
                         'it("test2") { Test.expect(true)}\n' +
@@ -78,7 +78,7 @@ describe('ruby runner', function () {
 
             it('should prevent short circuiting', function (done) {
                 runner.run({language: 'ruby',
-                        solution: [
+                        code: [
                             "def example",
                             "   Test.expect(true);",
                             "   raise 'early error'",
@@ -101,7 +101,7 @@ describe('ruby runner', function () {
     describe('rspec', function () {
         it('should handle a basic assertion', function (done) {
             runner.run({language: 'ruby',
-                    solution: 'a = 1',
+                    code: 'a = 1',
                     fixture: 'describe "test" do\n' +
                         'it("test2") { expect(1).to eq(1)}\n' +
                         'end',
@@ -113,7 +113,7 @@ describe('ruby runner', function () {
         });
         it('should support let', function (done) {
             runner.run({language: 'ruby',
-                    solution: 'a = 1',
+                    code: 'a = 1',
                     fixture: ['describe "test" do',
                         'let(:b) { a }',
                         'it("test2") { expect(b).to eq(1)}',
@@ -126,7 +126,7 @@ describe('ruby runner', function () {
         });
         it('should handle a basic failed assertion', function (done) {
             runner.run({language: 'ruby',
-                    solution: 'a = 1',
+                    code: 'a = 1',
                     fixture: 'describe "test" do\n' +
                         'it("test2") { expect(1).to eq(2)}\n' +
                         'end',
@@ -140,7 +140,7 @@ describe('ruby runner', function () {
         });
         it('should handle a basic assertion', function (done) {
             runner.run({language: 'ruby',
-                    solution: 'a = 1',
+                    code: 'a = 1',
                     fixture: 'describe "test" do\n' +
                         'it("test1") { a.idontexist() }\n' +
                         'it("test2") { expect(true)}\n' +
@@ -156,7 +156,7 @@ describe('ruby runner', function () {
         });
         it('should prevent short circuiting', function (done) {
             runner.run({language: 'ruby',
-                    solution: [
+                    code: [
                         "def example",
                         "   expect(true);",
                         "   raise 'early error'",
@@ -179,7 +179,7 @@ describe('ruby runner', function () {
         it('can run reddis', function (done) {
             runner.run({
                 language: 'ruby',
-                solution: [
+                code: [
                     'fork do',
                     '    exec "redis-server"',
                     'end',

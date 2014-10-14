@@ -4,7 +4,7 @@ var runner = require('../runner');
 describe('scala runner', function () {
     describe('.run', function () {
         it('should handle basic code evaluation', function (done) {
-            var solution = [
+            var code = [
                 'object HelloWorld {',
 		  'def main(args: Array[String]) {',
 			  'println("Hello, world!")',
@@ -12,7 +12,7 @@ describe('scala runner', function () {
 	        '}'
             ].join('\n');
 
-            runner.run({language: 'scala', solution: solution}, function (buffer) {
+            runner.run({language: 'scala', code: code}, function (buffer) {
 		console.log(buffer);
                 expect(buffer.stdout).to.equal("Hello, world!\n");
                 done();
@@ -31,7 +31,7 @@ describe('scala runner', function () {
 		      '}',
 		    '}'
                 ].join('\n'),
-                solution: [
+                code: [
 		    'import problems.Lists._',
 		    'object Test extends App {',
 		    '  println("Starting tests...")',

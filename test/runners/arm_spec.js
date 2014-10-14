@@ -6,7 +6,7 @@ describe('arm runner', function () {
     describe('.run', function () {
         it('should handle basic code evaluation (no libc)', function (done) {
             runner.run({language: 'arm',
-                    solution: [
+                    code: [
                         '.data',
                         'message: .ascii "ARMed and dangerous :D"',
                         'len = . - message',
@@ -30,7 +30,7 @@ describe('arm runner', function () {
         });
         it('should not use libc even with alternate spelling of global as globl', function (done) {
             runner.run({language: 'arm',
-                    solution: [
+                    code: [
                         '.data',
                         'message: .ascii "Tokyo dialect"',
                         'len = . - message',
@@ -54,7 +54,7 @@ describe('arm runner', function () {
         });
         it('should handle basic code evaluation (with libc)', function (done) {
             runner.run({language: 'arm',
-                    solution: [
+                    code: [
                         '.global  main',
                         'main:',
                         '   push {ip, lr}',

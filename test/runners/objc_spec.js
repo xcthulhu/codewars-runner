@@ -7,7 +7,7 @@ describe( 'objc runner', function(){
         it( 'should handle basic code evaluation', function(done){
             runner.run({
 		    language: 'objc', 
-		    solution: [
+		    code: [
 		    "#import <stdio.h>",
                     "#import <Foundation/Foundation.h>",
 		    "int main(void)",

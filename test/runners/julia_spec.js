@@ -7,7 +7,7 @@ describe('julia runner', function () {
         it('should handle basic code evaluation', function (done) {
             runner.run({
                 language: 'julia',
-                solution: 'println("42")'
+                code: 'println("42")'
             }, function (buffer) {
                 expect(buffer.stdout).to.equal('42\n');
                 done();
@@ -22,7 +22,7 @@ describe('julia runner', function () {
                     'const G = 6.67e-11 # Gravitational constant in m3 / kg s2',
                     'end'
                 ].join('\n'),
-                solution: [
+                code: [
                     'module Foo',
                     'using constants',
                     'println(G)',
@@ -38,7 +38,7 @@ describe('julia runner', function () {
         it('should be able to run a basic test', function (done) {
             runner.run({
                 language: 'julia',
-                solution: [
+                code: [
                     'module Solution',
                     'end'
                 ].join('\n'),
@@ -58,10 +58,10 @@ describe('julia runner', function () {
                 done();
             });
         });
-        it('should be able to import solution code', function (done) {
+        it('should be able to import code code', function (done) {
             runner.run({
                 language: 'julia',
-                solution: [
+                code: [
                     'module Solution',
                     'export inc',
                     'inc(x) = x + 1',
@@ -70,7 +70,7 @@ describe('julia runner', function () {
                 fixture: [
                     'using Test',
                     'using Solution',
-                    'facts("Can pull solution code") do',
+                    'facts("Can pull code code") do',
                     '  context("and it increments stuff") do',
                     '    @fact inc(1) => 2',
                     '  end',
@@ -78,16 +78,16 @@ describe('julia runner', function () {
                 ].join('\n')
             }, function (buffer) {
                 console.log(buffer.stderr);
-                expect(buffer.stdout).to.contain('<DESCRIBE::>Can pull solution code');
+                expect(buffer.stdout).to.contain('<DESCRIBE::>Can pull code code');
                 expect(buffer.stdout).to.contain('<IT::>and it increments stuff');
                 expect(buffer.stdout).to.contain('<PASSED::>Test Passed');
                 done();
             });
         });
-        it('should be handle solution code printing as a side effect', function (done) {
+        it('should be handle code code printing as a side effect', function (done) {
             runner.run({
                 language: 'julia',
-                solution: [
+                code: [
                     'module Solution',
                     'export inc',
                     'function inc(x)',
@@ -99,7 +99,7 @@ describe('julia runner', function () {
                 fixture: [
                     'using Test',
                     'using Solution',
-                    'facts("Can pull solution code") do',
+                    'facts("Can pull code code") do',
                     '  context("and it prints and increments stuff") do',
                     '    @fact inc(1) => 2',
                     '  end',
@@ -107,7 +107,7 @@ describe('julia runner', function () {
                 ].join('\n')
             }, function (buffer) {
                 console.log(buffer.stderr);
-                expect(buffer.stdout).to.contain('<DESCRIBE::>Can pull solution code');
+                expect(buffer.stdout).to.contain('<DESCRIBE::>Can pull code code');
                 expect(buffer.stdout).to.contain('Yolo\n');
                 expect(buffer.stdout).to.contain('<IT::>and it prints and increments stuff');
                 expect(buffer.stdout).to.contain('<PASSED::>Test Passed');
@@ -117,7 +117,7 @@ describe('julia runner', function () {
         it('should be be able to handle sad paths', function (done) {
             runner.run({
                 language: 'julia',
-                solution: [
+                code: [
                     'module Solution',
                     'end'
                 ].join('\n'),
@@ -140,7 +140,7 @@ describe('julia runner', function () {
         it('should be be able to handle really sad paths', function (done) {
             runner.run({
                 language: 'julia',
-                solution: [
+                code: [
                     'module Solution',
                     'end'
                 ].join('\n'),

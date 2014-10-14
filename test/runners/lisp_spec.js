@@ -5,7 +5,7 @@ var runner = require('../runner');
 describe( 'lisp runner', function(){
     describe( '.run', function(){
         it( 'should handle basic code evaluation', function(done){
-            runner.run({language: 'lisp', solution: '(format t "~a~%" 42)'}, function(buffer) {
+            runner.run({language: 'lisp', code: '(format t "~a~%" 42)'}, function(buffer) {
                 expect(buffer.stdout).to.equal('42\n');
                 done();
             });
@@ -17,7 +17,7 @@ describe( 'lisp runner', function(){
                 setup: [
                     '(defun twice (x) (+ x x))'
                 ].join('\n'),
-                solution: [
+                code: [
                     '(format t "~a~%" (twice 4))'
                 ].join('\n')
             }, function (buffer) {

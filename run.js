@@ -1,8 +1,8 @@
 var opts = require("nomnom")
         .options({
-            solution: {
+            code: {
               abbr: 'c',
-              help: "solution code to run"
+              help: 'code to run'
             },
             fixture: {
                 abbr: 'f',
