@@ -19,8 +19,7 @@
     "mocha": "1.19.x",
     "nomnom": "1.6.x",
     "response-time": "*",
-    "temp": "*",
-    "temporary": "*"
+    "temp": "*"
   },
   "engines": {
     "node": "0.10.x"
