@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var runner = require('../runner');
 
-describe('c++ runner', function () {
+describe('cpp runner', function () {
     describe('.run', function () {
         it('should handle basic code evaluation', function (done) {
             var code = [
@@ -10,7 +10,7 @@ describe('c++ runner', function () {
                 '{ std::cout << "\\\"Within C++, there is a much smaller and cleaner language struggling to get out.\\\" - Bjarn Stroustrup"; }'
             ].join('\n');
 
-            runner.run({language: 'c++', code: code}, function (buffer) {
+            runner.run({language: 'cpp', code: code}, function (buffer) {
                 expect(buffer.stdout).to.equal("\"Within C++, there is a much smaller and cleaner language struggling to get out.\" - Bjarn Stroustrup");
                 done();
             });
@@ -24,7 +24,7 @@ describe('c++ runner', function () {
                 '}'
             ].join('\n');
 
-            runner.run({language: 'c++', code: code}, function (buffer) {
+            runner.run({language: 'cpp', code: code}, function (buffer) {
                 expect(buffer.stdout).to.equal("Finally, lambdas in C++.  Now if we had typeclasses, purity and laziness we might have a reasonable functional programming language.");
                 done();
             });
