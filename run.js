@@ -1,4 +1,5 @@
-var opts = require("nomnom")
+var run = require('./lib/runner').run,
+    opts = require("nomnom")
         .options({
             code: {
               abbr: 'c',
@@ -47,4 +48,5 @@ var opts = require("nomnom")
         .help('This utility will run code in a specified language, using the specified testing suite.')
         .parse();
 
-require('./lib/runner').run(opts);
+
+run(opts);
