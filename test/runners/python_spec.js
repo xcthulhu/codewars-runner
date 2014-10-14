@@ -11,6 +11,21 @@ describe('python runner', function () {
                 done();
             });
         });
+        it('stderr', function (done) {
+            runner.run({language: 'python', code: 'import sys; sys.stderr.write("Error!  Codewars cannot and will not accept any more Fibonacci kata.")'}, function (buffer) {
+                console.log(buffer);
+                expect(buffer.stderr).to.equal("Error!  Codewars cannot and will not accept any more Fibonacci kata.");
+                done();
+            });
+        });
+        it('stderr', function (done) {
+            runner.run({language: 'python', code: 'import sys; sys.stderr.write("florp"); sys.stdout.write("foop")'}, function (buffer) {
+                console.log(buffer);
+                expect(buffer.stderr).to.equal("florp");
+                expect(buffer.stdout).to.equal("foop");
+                done();
+            });
+        });
     });
     describe('cw-2', function () {
         it('should handle a basic assertion', function (done) {
