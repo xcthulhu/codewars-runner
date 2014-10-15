@@ -13,59 +13,64 @@ import static java.nio.file.Files.createTempDirectory;
 
 public class TempDir {
 
-    private static void delete(Path path) throws IOException {
-        if (!Files.exists(path)) return;
+  public static boolean delete(File file) throws IOException {
+    return delete(file.toPath());
+  }
 
-        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc)
-                    throws IOException {
-                Files.deleteIfExists(dir);
-                return super.postVisitDirectory(dir, exc);
-            }
+  public static boolean delete(Path path) throws IOException {
+    if (!Files.exists(path)) return false;
 
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-                    throws IOException {
-                Files.deleteIfExists(file);
-                return super.visitFile(file, attrs);
-            }
-        });
-    }
+    Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+        @Override
+          public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+          throws IOException {
+          Files.deleteIfExists(dir);
+          return super.postVisitDirectory(dir, exc);
+        }
 
-    private static FileAttribute<Set<PosixFilePermission>> posixPermissions(String permissions) {
-        Set<PosixFilePermission> perms = PosixFilePermissions.fromString(permissions);
-        return PosixFilePermissions.asFileAttribute(perms);
-    }
+        @Override
+          public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+          throws IOException {
+          Files.deleteIfExists(file);
+          return super.visitFile(file, attrs);
+        }
+      });
+    return true;
+  }
 
-    private static void deleteOnShutdown(final Path path) {
-         Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                try {
-                    delete(path);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
+  private static FileAttribute<Set<PosixFilePermission>> posixPermissions(String permissions) {
+    Set<PosixFilePermission> perms = PosixFilePermissions.fromString(permissions);
+    return PosixFilePermissions.asFileAttribute(perms);
+  }
 
-    public static File create(String dir, String prefix, String permissions) throws IOException {
-        final Path tempDirPath = createTempDirectory(Paths.get(dir), prefix, posixPermissions(permissions));
-        deleteOnShutdown(tempDirPath);
-        return tempDirPath.toFile();
-    }
+  private static void deleteOnShutdown(final Path path) {
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
+        public void run() {
+          try {
+            delete(path);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+      });
+  }
 
-    public static File create(String prefix, String permissions) throws IOException {
-        final Path tempDirPath = createTempDirectory(prefix, posixPermissions(permissions));
-        deleteOnShutdown(tempDirPath);
-        return tempDirPath.toFile();
-    }
+  public static File create(String dir, String prefix, String permissions) throws IOException {
+    final Path tempDirPath = createTempDirectory(Paths.get(dir), prefix, posixPermissions(permissions));
+    deleteOnShutdown(tempDirPath);
+    return tempDirPath.toFile();
+  }
 
-    // TODO: If permissions are not specified, use umask to get system defaults somehow
-    public static File create(String prefix) throws IOException {
-        return create(prefix, "rwx------");
-    }
+  public static File create(String prefix, String permissions) throws IOException {
+    final Path tempDirPath = createTempDirectory(prefix, posixPermissions(permissions));
+    deleteOnShutdown(tempDirPath);
+    return tempDirPath.toFile();
+  }
+
+  // TODO: If permissions are not specified, use umask to get system defaults somehow
+  public static File create(String prefix) throws IOException {
+    return create(prefix, "rwx------");
+  }
 
 }
