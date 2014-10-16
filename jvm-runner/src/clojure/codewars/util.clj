@@ -4,6 +4,13 @@
   (:import [java.io StringWriter PrintWriter PrintStream ByteArrayOutputStream]
            [java.util.concurrent TimeoutException ExecutionException TimeUnit FutureTask]))
 
+(defn slurp-bytes
+  "Slurp the bytes from a slurpable thing"
+  [x]
+  (with-open [out (ByteArrayOutputStream.)]
+    (io/copy (io/input-stream x) out)
+    (.toByteArray out)))
+
 (def timeout "Timeout in milliseconds"
   ((fnil #(Integer/parseInt %) "10000") (env :timeout)))
 
@@ -54,7 +61,7 @@
   [& body]
   `(let [original-java-out# (PrintStream. System/out)
          original-java-err# (PrintStream. System/err)
-         ; TODO: Wish this wasn't so complicated
+         ;; TODO: Wish this wasn't so complicated
          clj-out# (StringWriter.)
          clj-err# (StringWriter.)
          out# (ByteArrayOutputStream.)

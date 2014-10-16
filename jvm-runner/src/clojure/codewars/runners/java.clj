@@ -1,5 +1,5 @@
 (ns codewars.runners.java
-  (:require [codewars.runners :refer [solution-only full-project]]
+  (:require [codewars.runners :refer [code-only full-project]]
             [codewars.clojure.test]
             [clojure.java.io :as io]
             [codewars.util :as util])
@@ -46,19 +46,21 @@
         :when (not (nil? file-name))]
     file-name))
 
-(defmethod solution-only "java"
-  [{:keys [:setup :solution]}]
+(defmethod code-only "java"
+  [{:keys [:setup :code]}]
   (let [dir (TempDir/create "java")
         setup (when (not (empty? setup)) (util/write-code! "java" dir setup))
-        solution (util/write-code! "java" dir solution)
-        files (file-names setup solution)]
-    (apply compile! files)
-    (-> solution
-        :class-name
-        (->> (load-class dir))
-        (.getDeclaredMethod "main" (into-array [(Class/forName "[Ljava.lang.String;")]))
-        (doto (.setAccessible true))
-        (.invoke nil (into-array [(into-array String [])])))))
+        code (util/write-code! "java" dir code)
+        files (file-names setup code)]
+    (try
+      (apply compile! files)
+      (-> code
+          :class-name
+          (->> (load-class dir))
+          (.getDeclaredMethod "main" (into-array [(Class/forName "[Ljava.lang.String;")]))
+          (doto (.setAccessible true))
+          (.invoke nil (into-array [(into-array String [])])))
+      (finally (TempDir/delete dir)))))
 
 (defn junit-result-to-map
   [^Result result]
@@ -69,11 +71,13 @@
    :successful? (.wasSuccessful result)})
 
 (defmethod full-project "java"
-  [{:keys [:fixture :setup :solution]}]
+  [{:keys [:fixture :setup :code]}]
   (let [dir (TempDir/create "java")
         fixture (util/write-code! "java" dir fixture)
         setup (when (not (empty? setup)) (util/write-code! "java" dir setup))
-        solution (util/write-code! "java" dir solution)
-        files (file-names fixture setup solution)]
-    (apply compile! files)
-    (->> fixture :class-name (load-class dir) run-junit-tests junit-result-to-map)))
+        code (util/write-code! "java" dir code)
+        files (file-names fixture setup code)]
+    (try
+      (apply compile! files)
+      (->> fixture :class-name (load-class dir) run-junit-tests junit-result-to-map)
+      (finally (TempDir/delete dir)))))
