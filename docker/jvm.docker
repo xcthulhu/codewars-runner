@@ -41,6 +41,7 @@ USER codewarrior
 ENV TIMEOUT 10000
 ENV USER codewarrior
 ENV HOME /home/codewarrior
+ENV ZMQ_SOCKET ipc:///codewars/zmq/socket
 RUN mocha -t 10000 test/runners/{java,clojure,groovy,scala}_spec.js
 
 #timeout is a fallback in case an error with node
