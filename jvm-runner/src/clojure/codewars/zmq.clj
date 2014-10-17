@@ -22,19 +22,19 @@
   "ZMQ request server; should only be one instance running or ZMQ throws a fit"
   []
   (with-open
-      [socket (doto (zmq/socket (zmq/zcontext) :rep)
-                (zmq/bind addr))]
+      [socket (doto (zmq/socket (zmq/zcontext) :rep) (zmq/connect addr))]
     (loop [message (-> (zmq/receive socket) String. (json/parse-string true))]
       (if (map? message)
 
         (let [result (run message)]
-          (-> result (assoc :type "response") json/generate-string (->> (zmq/send-str socket)))
+          (-> result (assoc :type "execution response") json/generate-string (->> (zmq/send-str socket)))
           result)
 
         (do
           (-> (status message) json/generate-string (->> (zmq/send-str socket)))
           (recur (-> (zmq/receive socket) String. (json/parse-string true))))))))
 
+;; TODO: This shouldn't be necessary, but ZMQ hangs without it
 (def ^:private zmq-daemon (atom (future-call server)))
 
 (defn listen
