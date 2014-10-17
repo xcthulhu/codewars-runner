@@ -1,6 +1,5 @@
 (ns codewars.runners.clojure-test
   (:require [clojure.test :refer :all]
-            [clojure.pprint :refer [pprint]]
             [codewars.core :refer [-main] :as core]
             [codewars.util :as util]
             [cheshire.core :as json]
@@ -29,7 +28,6 @@
                       [clojure.test :refer :all]))
                   (deftest ok (is (= :ok (foo/wizard))))"})
       (let [test-result (-main)]
-        (pprint test-result)
         (is (not (empty? (:stdout test-result))))
         (is (.contains (:stdout test-result) "ok"))
         (is (= {:type :summary, :fail 0, :error 0, :pass 1, :test 1}

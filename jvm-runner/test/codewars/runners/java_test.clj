@@ -1,6 +1,5 @@
 (ns codewars.runners.java-test
   (:require [clojure.test :refer :all]
-            [clojure.pprint :refer [pprint]]
             [codewars.core :refer [-main] :as core]
             [cheshire.core :as json]))
 
@@ -28,7 +27,13 @@
       (json/generate-string
        {:language "java"
         :code "public class Hello {public static void main(String[] args) {System.out.print(\"Hellooo!\");}}"})
-      (is (= "Hellooo!" (:stdout (-main)))))))
+      (is (= "Hellooo!" (:stdout (-main))))))
+  (testing "-main can handle a java code that prints to standard error"
+    (with-in-str
+      (json/generate-string
+       {:language "java"
+        :code "public class PrintError {public static void main(String[] args) {System.err.print(\"Danger! Danger! High Voltage!\");}}"})
+      (is (= "Danger! Danger! High Voltage!" (:stderr (-main)))))))
 
 (deftest java-setup-code
   (testing "-main can handle a java code and setup code"
@@ -88,7 +93,6 @@
                       System.out.println(\"Shouldn't get here\");}}"})
       (let [output (-main)
             test-out-string (:stdout output)]
-        (pprint output)
         (is (.contains test-out-string "<DESCRIBE::>sadPath(TestForFailure)<:LF:>"))
         (is (.contains test-out-string "<FAILED::>Failed Message expected:"))
         (is (.contains test-out-string "<5> but was:<3>"))
