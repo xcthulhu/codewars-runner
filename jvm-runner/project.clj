@@ -31,5 +31,5 @@
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
   :env {:timeout "10000"
-        :zmq-socket "tcp://127.0.0.1:12349"}
+        :zmq-socket "ipc:///tmp/codewars"}
   :main codewars.core)
