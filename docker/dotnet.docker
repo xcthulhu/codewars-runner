@@ -11,24 +11,6 @@ RUN apt-get install -y mono-complete
 # Install F#
 RUN apt-get install -y fsharp
 
-# Install NuGet
-RUN mkdir -p /usr/local/share/mono/
-WORKDIR /usr/local/share/mono/
-RUN mozroots --import --sync
-RUN wget 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=nuget&DownloadId=835802&FileTime=130438931143730000&Build=20928' -O NuGet.exe
-
-RUN mono NuGet.exe update -self
-RUN mono NuGet.exe install xunit ; \
-    mono NuGet.exe install xunit.extensions ; \
-    mono NuGet.exe install ; \
-    mono NuGet.exe install log4net ; \
-    mono NuGet.exe install mongocsharpdriver ; \
-    mono NuGet.exe install System.Data.SQLite
-
-# this is currently breaking the build
-#RUN mono NuGet.exe install NUnit ; \
-#    mono NuGet.exe install NUnit.Runners ; \
-
 # ADD cli-runner and install node deps
 ADD . /codewars
 

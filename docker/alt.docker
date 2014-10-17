@@ -1,6 +1,6 @@
-# BUILD-USING:    docker build -t codewars/runner-julia .
-# TEST-USING:     docker run --rm -i -t --name=test-runner-julia --entrypoint=/bin/bash codewars/runner-julia -s
-# RUN-USING:      docker run --rm --name=runner-julia codewars/runner-julia --help
+# BUILD-USING:    docker build -t codewars/runner-alt .
+# TEST-USING:     docker run --rm -i -t --entrypoint=/bin/bash codewars/runner-alt -s
+# RUN-USING:      docker run --rm codewars/runner-alt --help
 
 # Pull base image.
 FROM codewars/runner-base

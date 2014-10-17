@@ -1,41 +1,21 @@
-var config = require('./lib/config' ),
+var run = require('./lib/runner').run,
     opts = require("nomnom")
         .options({
-            solution: {
+            code: {
               abbr: 'c',
-              help: "solution code to run"
-            },
-            solutionFile: {
-                abbr: 'C',
-                full: 'solution-file',
-                help: "solution file to run"
+              help: 'code to run'
             },
             fixture: {
                 abbr: 'f',
-                help: 'Test fixture code to test with'
-            },
-            fixtureFile: {
-                abbr: 'F',
-                full: 'fixture-file',
                 help: 'Test fixture code to test with'
             },
             setup: {
                 abbr: 's',
                 help: 'Setup code to be used for executing the code'
             },
-            setupFile: {
-                abbr: 'S',
-                full: 'setup-file',
-                help: 'Setup file to be used for executing the code'
-            },
             language: {
                 abbr: 'l',
                 help: 'The language to execute the code in'
-            },
-            languageVersion: {
-                abbr: 'V',
-                full: 'language-version',
-                help: 'The version of the language that you wish to use'
             },
             testFramework: {
                 abbr: 't',
@@ -61,17 +41,12 @@ var config = require('./lib/config' ),
                 flag: true,
                 help: 'Print version and exit',
                 callback: function () {
-                    return config.version
+                    return require('./lib/config').version;
                 }
             }
         })
         .help('This utility will run code in a specified language, using the specified testing suite.')
         .parse();
 
-require('./lib/opts').process(opts, function(opts) {
-    if(opts) require('./lib/runners/' + opts.language + '.js').run(opts);
-});
 
-
-
-
+run(opts);

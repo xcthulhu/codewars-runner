@@ -1,12 +1,12 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/clojure');
+var runner = require('../runner');
 
 describe('clojure runner', function () {
     describe('.run', function () {
         it('should handle basic code evaluation', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: '(println "42")'
+                code: '(println "42")'
             }, function (buffer) {
                 console.log(buffer.stderr);
                 expect(buffer.stdout).to.equal('42\n');
@@ -16,7 +16,7 @@ describe('clojure runner', function () {
         it('should handle running a namespace with imports', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: [
+                code: [
                     '(ns foo (:require [clojure.edn :as edn]))',
                     '(print (get (edn/read-string "{:code \\"wars\\"}") :code))'
                 ].join('\n')
@@ -29,8 +29,8 @@ describe('clojure runner', function () {
         it('should handle setup code', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: [
-                    '(ns foo.solution-code (:require [foo.fighters]))',
+                code: [
+                    '(ns foo.code-code (:require [foo.fighters]))',
                     '(foo.fighters/everlong)'
                 ].join('\n'),
                 setup: [
@@ -48,7 +48,7 @@ describe('clojure runner', function () {
         it('should be able to run a basic test', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: '(ns empty.namespace)',
+                code: '(ns empty.namespace)',
                 fixture: [
                     '(ns clojure.test.example (:use clojure.test))',
                     '(deftest add-1-to-1 (testing "arithmetic works" (is (= 2 (+ 1 1)))))'
@@ -65,7 +65,7 @@ describe('clojure runner', function () {
         it('should be able to fail', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: '(ns empty.namespace)',
+                code: '(ns empty.namespace)',
                 fixture: [
                     '(ns clojure.test.example (:use clojure.test))',
                     '(deftest sad-path (testing "won\'t work" (is (= 2 1) "bad math")))'
@@ -83,7 +83,7 @@ describe('clojure runner', function () {
         it('should print', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: '(ns foo) (defn bar [] (print "yolo") 1)',
+                code: '(ns foo) (defn bar [] (print "yolo") 1)',
                 fixture: [
                     '(ns clojure.test.example (:use clojure.test) (:require [foo]))',
                     '(deftest printing (testing "foo/bar" (is (= 1 (foo/bar)))))'
@@ -100,7 +100,7 @@ describe('clojure runner', function () {
         it('should have an error when there\'s an exception', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: '(ns foo)',
+                code: '(ns foo)',
                 fixture: [
                     '(ns clojure.test.example (:use clojure.test))',
                     '(deftest exception (testing "1 / 0" (is (= 1 (/ 1 0)))))'
@@ -118,7 +118,7 @@ describe('clojure runner', function () {
         it('should handle a typical kata', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: [
+                code: [
                     '(ns last (:refer-clojure :exclude [last]))',
                     '(defn last [lst] (reduce #(do %2) lst))'
                 ].join('\n'),
@@ -158,7 +158,7 @@ describe('clojure runner', function () {
         it('should fail fast', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: '(ns empty.namespace)',
+                code: '(ns empty.namespace)',
                 fixture: [
                     '(ns clojure.test.example (:use clojure.test))',
                     '(deftest fast-fail',
@@ -183,7 +183,7 @@ describe('clojure runner', function () {
         it('test framework should not think HOME is /root', function (done) {
             runner.run({
                 language: 'clojure',
-                solution: '(print (System/getenv "HOME"))'
+                code: '(print (System/getenv "HOME"))'
             }, function (buffer) {
                 console.log(buffer.stderr);
                 expect(buffer.stdout).to.not.equal('/root');

@@ -1,11 +1,11 @@
 var expect = require('chai').expect,
-    runner = require('../../lib/runners/haskell');
+    runner = require('../runner');
 
 describe('haskell runner', function () {
     describe('.run', function () {
         it('should handle basic code evaluation', function (done) {
             runner.run({language: 'haskell',
-                solution: 'main = putStrLn "42"'
+                code: 'main = putStrLn "42"'
             }, function (buffer) {
                 expect(buffer.stdout).to.equal('42\n');
                 done();
@@ -14,7 +14,7 @@ describe('haskell runner', function () {
         it('should handle running a module with imports', function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module Foo where',
                     'import Control.Monad (filterM)',
                     'powerset :: [a] -> [[a]]',
@@ -30,7 +30,7 @@ describe('haskell runner', function () {
         it('should handle setup code', function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module Foo where',
                     'import Foo.Utils as Setup (powerset)',
                     'main :: IO ()',
@@ -50,7 +50,7 @@ describe('haskell runner', function () {
         it('should handle skipping module declaration', function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'import Foo.Utils as Setup (powerset)',
                     'main :: IO ()',
                     'main = putStr $ show $ Setup.powerset [1..3]'
@@ -72,7 +72,7 @@ describe('haskell runner', function () {
         it('should be able to run a basic test', function (done) {
             runner.run({
                 language: 'haskell',
-                solution: 'module Foo where',
+                code: 'module Foo where',
                 fixture: [
                     'module Basic.Test where',
                     'import Test.Hspec',
@@ -93,7 +93,7 @@ describe('haskell runner', function () {
         it("should work even if test module name isn't specified", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: 'module Foo where',
+                code: 'module Foo where',
                 fixture: [
                     'import Test.Hspec',
                     'main :: IO ()',
@@ -110,10 +110,10 @@ describe('haskell runner', function () {
                 done();
             });
         });
-        it("should work be able to import the solution", function (done) {
+        it("should work be able to import the code", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'x :: Int',
                     'x = 1'
@@ -135,10 +135,10 @@ describe('haskell runner', function () {
                 done();
             });
         });
-        it("should be able to import the solution even when solution module name is unspecified (the default is module name for the solution is 'Main')", function (done) {
+        it("should be able to import the code even when code module name is unspecified (the default is module name for the code is 'Main')", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'x :: Int',
                     'x = 1'
                 ].join('\n'),
@@ -162,7 +162,7 @@ describe('haskell runner', function () {
         it("should report when something is wrong", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: 'x = 1',
+                code: 'x = 1',
                 fixture: [
                     'module Sad.Path.Test where',
                     'import Test.Hspec',
@@ -184,7 +184,7 @@ describe('haskell runner', function () {
         it("should print as a side effect", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: 'x = do putStrLn "Test" ; return 1',
+                code: 'x = do putStrLn "Test" ; return 1',
                 fixture: [
                     'module PrintEffect where',
                     'import Test.Hspec',
@@ -206,7 +206,7 @@ describe('haskell runner', function () {
         it("should fail fast", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: 'x = 1',
+                code: 'x = 1',
                 fixture: [
                     'module Fast.Fail.Test where',
                     'import Test.Hspec',
@@ -232,7 +232,7 @@ describe('haskell runner', function () {
         it("should report exceptions as errors", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: 'x = head []',
+                code: 'x = head []',
                 fixture: [
                     'module Fast.Fail.Test where',
                     'import Test.Hspec',
@@ -250,10 +250,10 @@ describe('haskell runner', function () {
                 done();
             });
         });
-        it("should be able to hide a module from the solution code", function (done) {
+        it("should be able to hide a module from the code code", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'x :: Int',
                     'x = 1'
@@ -277,7 +277,7 @@ describe('haskell runner', function () {
         it("should fail if a module which is supposed to be hidden is not", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'import Data.Monoid',
                     'x :: Int',
@@ -302,7 +302,7 @@ describe('haskell runner', function () {
         it("should recognize when things are hidden from a particular module", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'import Data.List hiding (reverse)',
                     'reverse :: [a] -> [a]',
@@ -327,7 +327,7 @@ describe('haskell runner', function () {
         it("should fail when a symbol from a module that ought to be hidden is not", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'import Data.List (intercalate)',
                     'reverse :: [a] -> [a]',
@@ -352,7 +352,7 @@ describe('haskell runner', function () {
         it("should fail when a symbol from a module that ought to be hidden is not because the whole module was imported", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'import Data.List',
                     'reverse :: [a] -> [a]',
@@ -377,7 +377,7 @@ describe('haskell runner', function () {
         it("should fail when a symbol from a module that ought to be hidden is not because it wasn't hidden properly", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'import Data.List hiding (reverse)',
                     'import Control.Monad hiding ((=<<))',
@@ -403,7 +403,7 @@ describe('haskell runner', function () {
         it("should fail when a function is hidden once in a module, but later imported", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'import Data.List hiding (reverse)',
                     'import Control.Monad hiding ((>=>))',
@@ -430,7 +430,7 @@ describe('haskell runner', function () {
         it("should fail when a function is hidden once in a module, but later imported as qualified", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'import Data.List hiding (reverse)',
                     'import Control.Monad hiding ((>=>))',
@@ -457,7 +457,7 @@ describe('haskell runner', function () {
         it("should be able to hide Prelude functions", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'import Prelude hiding (reverse)',
                     'reverse :: [a] -> [a]',
@@ -482,7 +482,7 @@ describe('haskell runner', function () {
         it("should detect when we failed to hide a Prelude function", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'module CodeWars.Solution where',
                     'reverse :: [a] -> [a]',
                     'reverse = foldl (flip (:)) []'
@@ -506,7 +506,7 @@ describe('haskell runner', function () {
         it("should detect when we hid a Prelude function, even when we forgot to say our module name", function (done) {
             runner.run({
                 language: 'haskell',
-                solution: [
+                code: [
                     'import Prelude hiding (reverse)',
                     'reverse :: [a] -> [a]',
                     'reverse = foldl (flip (:)) []'
@@ -537,7 +537,7 @@ describe('haskell runner', function () {
     describe('haskell', function () {
         it('can handle SQLite interaction', function (done) {
             runner.run({language: 'haskell',
-                solution: [
+                code: [
                     '{-# LANGUAGE QuasiQuotes, TemplateHaskell, TypeFamilies #-}',
                     '{-# LANGUAGE OverloadedStrings, GADTs, FlexibleContexts, MultiParamTypeClasses #-}',
                     '{-# LANGUAGE NoMonomorphismRestriction, GeneralizedNewtypeDeriving #-}',

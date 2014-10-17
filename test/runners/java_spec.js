@@ -1,12 +1,12 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/java');
+var runner = require('../runner');
 
 
 describe('java runner', function () {
     describe('.run', function () {
         it('should handle basic code evaluation', function (done) {
             runner.run({language: 'java',
-                solution: [
+                code: [
                     'class Solution {',
                     '   static void main(String[] args){',
                     '        System.out.println("42");',
@@ -21,7 +21,7 @@ describe('java runner', function () {
     describe('junit', function () {
         it('should handle basic junit tests', function (done) {
             runner.run({language: 'java',
-                solution: 'public class Solution {\n'
+                code: 'public class Solution {\n'
                     + '    public Solution(){}\n'
                     + '    public int testthing(){return 3;}\n'
                     + '}\n',
@@ -43,7 +43,7 @@ describe('java runner', function () {
         });
         it('should handle junit tests failing', function (done) {
             runner.run({language: 'java',
-                solution: 'public class Solution {\n'
+                code: 'public class Solution {\n'
                     + '    public Solution(){}\n'
                     + '    public int testthing(){return 3;}\n'
                     + '}\n',

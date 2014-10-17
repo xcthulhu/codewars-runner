@@ -1,12 +1,12 @@
 var expect = require('chai').expect;
-var runner = require('../../lib/runners/gas');
+var runner = require('../runner');
 
 
 describe('gas runner', function () {
     describe('.run', function () {
         it('should handle basic code evaluation (no libc)', function (done) {
             runner.run({language: 'gas',
-                    solution: [
+                    code: [
                         '   .global _start',
                         '   .text',
                         '_start:',
@@ -28,7 +28,7 @@ describe('gas runner', function () {
         });
         it('should handle basic code evaluation (with libc)', function (done) {
             runner.run({language: 'gas',
-                    solution: [
+                    code: [
                         '   .global  main',
                         '   .text',
                         'main:',
