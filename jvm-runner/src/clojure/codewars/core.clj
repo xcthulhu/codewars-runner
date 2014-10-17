@@ -1,13 +1,12 @@
 (ns codewars.core
-  (:require [cheshire.core :as json]
-            [codewars.runners :refer [run]]
-            [codewars.runners.groovy]
-            [codewars.runners.clojure]
-            [codewars.runners.java])
+  (:require
+   [clojure.core.async :refer [go alts!!]]
+   [codewars.stdin]
+   [codewars.zmq])
   (:gen-class))
 
 (defn -main
-  "Listens to *in* for a JSON message, parses it and calls the appropriate runner"
+  "Multiplexes stdin and ZMQ, outputs whichever one it recieves first"
   [& _]
-  (let [input (json/parse-stream *in* true)]
-    (run input)))
+  (first (alts!! [(go (codewars.stdin/listen))
+                  (go (codewars.zmq/listen))])))

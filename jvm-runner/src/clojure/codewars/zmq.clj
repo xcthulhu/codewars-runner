@@ -14,20 +14,32 @@
   (env :zmq-socket))
 
 (defn status [message]
-   {:type "JVM status"
-    :status :read
-    :message message})
+  {:type "status"
+   :status :ready
+   :message message})
 
-(defn server
-  "Listen for jobs off of a ZMQ connection, runs jobs and replies"
+(defn- server
+  "ZMQ request server; should only be one instance running or ZMQ throws a fit"
   []
   (with-open
       [socket (doto (zmq/socket (zmq/zcontext) :rep)
                 (zmq/bind addr))]
-    (println "Listening to" addr)
-    (loop [message (json/parse-string (String. (zmq/receive socket)))]
+    (loop [message (-> (zmq/receive socket) String. (json/parse-string true))]
       (if (map? message)
-        (zmq/send-str socket (json/generate-string (run message)))
-        (do (zmq/send-str socket (json/generate-string (status message)))
-            (recur (json/parse-string (String. (zmq/receive socket))))))))
-  :done)
+
+        (let [result (run message)]
+          (-> result (assoc :type "response") json/generate-string (->> (zmq/send-str socket)))
+          result)
+
+        (do
+          (-> (status message) json/generate-string (->> (zmq/send-str socket)))
+          (recur (-> (zmq/receive socket) String. (json/parse-string true))))))))
+
+(def ^:private zmq-daemon (atom (future-call server)))
+
+(defn listen
+  "Listen for jobs off of a ZMQ connection, runs jobs and replies"
+  []
+  (when (future-done? @zmq-daemon)
+    (swap! zmq-daemon (constantly (future-call server))))
+  @@zmq-daemon)
