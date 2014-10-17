@@ -35,11 +35,11 @@
           (recur (-> (zmq/receive socket) String. (json/parse-string true))))))))
 
 ;; TODO: This shouldn't be necessary, but ZMQ hangs without it
-(def ^:private zmq-daemon (atom (future-call server)))
+(def ^:private zmq-daemon (atom nil))
 
 (defn listen
   "Listen for jobs off of a ZMQ connection, runs jobs and replies"
   []
-  (when (future-done? @zmq-daemon)
+  (when ((some-fn nil? future-done?) @zmq-daemon)
     (swap! zmq-daemon (constantly (future-call server))))
   @@zmq-daemon)
