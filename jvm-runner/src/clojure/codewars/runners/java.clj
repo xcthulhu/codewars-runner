@@ -30,6 +30,8 @@
   (let [class-loader
         (URLClassLoader/newInstance
          (into-array [(io/as-url dir)]))]
+    ;; TODO: Classes don't reload
+    ;; Try this: http://tutorials.jenkov.com/java-reflection/dynamic-class-loading-reloading.html
     (Class/forName (name class-name) true class-loader)))
 
 (defn- run-junit-tests
