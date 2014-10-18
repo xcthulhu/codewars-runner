@@ -11,7 +11,7 @@
 
 (def addr
   "Address of the ZMQ socket"
-  (env :zmq-socket))
+  (or (env :zmq-socket) "inproc://zmq-socket"))
 
 (defn status [message]
   {:type "status"
