@@ -8,7 +8,7 @@ describe('clojure runner', function () {
                 language: 'clojure',
                 code: '(println "42")'
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.equal('42\n');
                 done();
             });
@@ -21,7 +21,7 @@ describe('clojure runner', function () {
                     '(print (get (edn/read-string "{:code \\"wars\\"}") :code))'
                 ].join('\n')
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.equal('wars');
                 done();
             });
@@ -38,7 +38,7 @@ describe('clojure runner', function () {
                     '(defn everlong [] (print "Hello, I\'ve waited here for you"))'
                 ].join('\n')
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.equal('Hello, I\'ve waited here for you');
                 done();
             });
@@ -54,11 +54,10 @@ describe('clojure runner', function () {
                     '(deftest add-1-to-1 (testing "arithmetic works" (is (= 2 (+ 1 1)))))'
                 ].join('\n')
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.contain('<DESCRIBE::>add-1-to-1');
                 expect(buffer.stdout).to.contain('<IT::>arithmetic works');
                 expect(buffer.stdout).to.contain('<PASSED::>Test Passed');
-                expect(buffer.stdout).to.contain('<COMPLETEDIN::>');
                 done();
             });
         });
@@ -71,7 +70,7 @@ describe('clojure runner', function () {
                     '(deftest sad-path (testing "won\'t work" (is (= 2 1) "bad math")))'
                 ].join('\n')
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.contain('<DESCRIBE::>sad-path');
                 expect(buffer.stdout).to.contain('<IT::>won\'t work');
                 expect(buffer.stdout).to.contain('<FAILED::>bad math');
@@ -89,11 +88,10 @@ describe('clojure runner', function () {
                     '(deftest printing (testing "foo/bar" (is (= 1 (foo/bar)))))'
                 ].join('\n')
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.contain('<DESCRIBE::>printing');
                 expect(buffer.stdout).to.contain('yolo<IT::>foo/bar');
                 expect(buffer.stdout).to.contain('<PASSED::>Test Passed');
-                expect(buffer.stdout).to.contain('<COMPLETEDIN::>');
                 done();
             });
         });
@@ -106,7 +104,7 @@ describe('clojure runner', function () {
                     '(deftest exception (testing "1 / 0" (is (= 1 (/ 1 0)))))'
                 ].join('\n')
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.contain('<DESCRIBE::>exception');
                 expect(buffer.stdout).to.contain('<IT::>1 / 0');
                 expect(buffer.stdout).to.contain('<ERROR::>');
@@ -148,7 +146,7 @@ describe('clojure runner', function () {
 
                 ].join('\n')
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.contain('<DESCRIBE::>test-last-function');
                 expect(buffer.stdout).to.contain('<IT::>[1 9 13 1 99 9 9 13]');
                 expect(buffer.stdout).to.contain('<PASSED::>Test Passed');
@@ -167,7 +165,7 @@ describe('clojure runner', function () {
                     ')'
                 ].join('\n')
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.contain('<DESCRIBE::>fast-fail');
                 expect(buffer.stdout).to.contain('<IT::>quit early');
                 expect(buffer.stdout).to.contain('<FAILED::>not true');
@@ -185,7 +183,7 @@ describe('clojure runner', function () {
                 language: 'clojure',
                 code: '(print (System/getenv "HOME"))'
             }, function (buffer) {
-                console.log(buffer.stderr);
+                console.log(buffer);
                 expect(buffer.stdout).to.not.equal('/root');
                 done();
             });
