@@ -45,10 +45,8 @@
                       [clojure.test :refer :all]))
                   (deftest oh-we-will-pray-its-all-right
                       (is (= :gotta-get-away (dio/holy-diver))))"})
-      (with-redefs
-        [codewars.clojure.test/fail (constantly nil)]
         (is (= {:type :summary, :fail 1, :error 0, :pass 0, :test 1}
-               (:result (-main))))))))
+               (:result (-main)))))))
 
 (deftest clojure-code-only
   (testing "-main will just run code if a fixture is not present (and *out* is being captured)"
@@ -86,6 +84,7 @@
       (is (= "Phantom figure free forever, NEON KNIGHTS!!!!!"
              (:stderr (-main)))))))
 
+
 (deftest clojure-code-and-setup
   (testing "-main will just run code and read correctly from setup code"
     (with-in-str
@@ -119,6 +118,18 @@
                   (deftest maiden-rocks (is (= (maiden-greatest-hits/fear-of-the-dark) (fear.of.the.dark/lyric))))"})
       (is (= {:type :summary, :fail 0, :error 0, :pass 1, :test 1}
              (:result (-main)))))))
+
+(deftest clojure-sad-path-0
+  (testing "tests can fail"
+    (with-in-str
+      (json/generate-string
+       {:language "clojure"
+        :code "(ns empty.namespace)"
+        :fixture "(ns clojure.test.example (:use clojure.test))
+                  (deftest sad-path (testing \"won't work\" (is (= 2 1) \"bad math\")))"})
+      (let [{:keys [result stdout]} (-main)]
+        (is (not (nil? result)))
+        (is (.contains stdout "FAIL"))))))
 
 (deftest clojure-exceptions
   (testing "Exception are handled gracefully"

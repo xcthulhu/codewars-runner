@@ -21,17 +21,13 @@
     (println status)))
 
 (defn- expr-str [expression]
-  (if (instance? Throwable expression)
-    (with-out-str
-      (stack/print-cause-trace expression *stack-trace-depth*))
-    (pr-str expression)))
+  (with-out-str
+    (if (instance? Throwable expression)
+      (stack/print-cause-trace expression *stack-trace-depth*)
+        (prn expression))))
 
 (defn- print-expectations [{:keys [:expected :actual]}]
   (println "expected:" (pr-str expected) "- actual:" (expr-str actual)))
-
-(defn- fail []
-  (flush)
-  (System/exit 1))
 
 (defmulti codewars-report :type)
 
@@ -46,16 +42,14 @@
     (inc-report-counter :fail)
     (print-context)
     (print-with-message "<FAILED::>" m)
-    (print-expectations m))
-  (fail))
+    (print-expectations m)))
 
 (defmethod codewars-report :error [m]
   (with-test-out
     (inc-report-counter :error)
     (print-context)
     (print-with-message "<ERROR::>" m)
-    (print-expectations m))
-  (fail))
+    (print-expectations m)))
 
 (defmethod codewars-report :begin-test-ns [_])
 (defmethod codewars-report :end-test-ns [_])

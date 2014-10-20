@@ -74,6 +74,7 @@
        (try
          (catch-and-wrap
           (let [result# (do ~@body)]
+            (flush)
             {:stdout (str clj-out# out#)
              :stderr (str clj-err# err#)
              :result result#}))
