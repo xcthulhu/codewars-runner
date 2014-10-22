@@ -9,7 +9,8 @@
   `(->
     (with-out-str ~@body)
     (clojure.string/replace "\n" "<:LF:>")
-    println))
+    (println)
+    clojure.test/with-test-out))
 
 (defn- print-context []
   (when (seq *testing-contexts*)
@@ -21,13 +22,17 @@
     (println status)))
 
 (defn- expr-str [expression]
-  (with-out-str
-    (if (instance? Throwable expression)
-      (stack/print-cause-trace expression *stack-trace-depth*)
-        (prn expression))))
+  (if (instance? Throwable expression)
+    (with-out-str
+      (stack/print-cause-trace expression *stack-trace-depth*))
+    (pr-str expression)))
 
 (defn- print-expectations [{:keys [:expected :actual]}]
   (println "expected:" (pr-str expected) "- actual:" (expr-str actual)))
+
+(defn- fail []
+  (flush)
+  (System/exit 1))
 
 (defmulti codewars-report :type)
 
@@ -42,14 +47,16 @@
     (inc-report-counter :fail)
     (print-context)
     (print-with-message "<FAILED::>" m)
-    (print-expectations m)))
+    (print-expectations m))
+  (fail))
 
 (defmethod codewars-report :error [m]
   (with-test-out
     (inc-report-counter :error)
     (print-context)
     (print-with-message "<ERROR::>" m)
-    (print-expectations m)))
+    (print-expectations m))
+  (fail))
 
 (defmethod codewars-report :begin-test-ns [_])
 (defmethod codewars-report :end-test-ns [_])
@@ -62,8 +69,16 @@
 
 (defmethod codewars-report :summary [_])
 
-(defn run-tests
-  "Run tests using the codewars formatter, and wrap the results"
-  [ & namespaces ]
-  (binding [clojure.test/report codewars.clojure.test/codewars-report]
-    (apply clojure.test/run-tests namespaces)))
+(defmacro time
+  [expr]
+  `(let [start# (System/nanoTime)
+         ret# ~expr]
+     (println (str "<COMPLETEDIN::>"
+                   (-> (System/nanoTime) (- start#) double (/ 1000000.0))
+                   " ms<:LF:>"))
+     ret#))
+
+(defn run-tests [ & namespaces ]
+  (binding [clojure.test/report
+            codewars.clojure.test/codewars-report]
+    (time (apply clojure.test/run-tests namespaces))))

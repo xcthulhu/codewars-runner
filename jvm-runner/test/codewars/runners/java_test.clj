@@ -1,16 +1,18 @@
 (ns codewars.runners.java-test
   (:require [clojure.test :refer :all]
             [codewars.core :refer [-main] :as core]
+            [codewars.test.utils :refer :all]
             [cheshire.core :as json]))
 
+
 (deftest java-basic
-  (testing "-main can handle a very basic java code and fixture (which is bogus so it insta-fails)"
+  (testing "-main can handle a very basic java code and fixture"
     (with-in-str
       (json/generate-string
        {:language "java"
         :code "class Foo {}"
         :fixture "class Bar {}"})
-      (is (not (get-in (-main) [:result :successful?]))))))
+      (is (= org.junit.runner.Result (class (-main)))))))
 
 (deftest java-code-only
   (testing "-main can handle a java code without a fixture"
@@ -18,7 +20,7 @@
       (json/generate-string
        {:language "java"
         :code "class FooFighters { static int main(String [] args) {return 1;} }"})
-      (is (= 1 (:result (-main)))))))
+      (is (= 1 (-main))))))
 
 
 (deftest java-code-print
@@ -27,13 +29,7 @@
       (json/generate-string
        {:language "java"
         :code "public class Hello {public static void main(String[] args) {System.out.print(\"Hellooo!\");}}"})
-      (is (= "Hellooo!" (:stdout (-main))))))
-  (testing "-main can handle a java code that prints to standard error"
-    (with-in-str
-      (json/generate-string
-       {:language "java"
-        :code "public class PrintError {public static void main(String[] args) {System.err.print(\"Danger! Danger! High Voltage!\");}}"})
-      (is (= "Danger! Danger! High Voltage!" (:stderr (-main)))))))
+      (is (= "Hellooo!" (with-java-out-str (-main)))))))
 
 (deftest java-setup-code
   (testing "-main can handle a java code and setup code"
@@ -46,7 +42,7 @@
         :code "class HelloAgain {
                      static void main(String[] args) {
                          System.out.print(Beatles.sayHello());}}"})
-      (is (= "Hello, hello!" (:stdout (-main)))))))
+      (is (= "Hello, hello!" (with-java-out-str (-main)))))))
 
 (deftest java-test-fixture
   (testing "-main can handle a junit test"
@@ -65,10 +61,7 @@
                         Code s = new Code();
                          assertEquals(\"wow\", 3, s.testthing());
                          System.out.println(\"test out\");}}"})
-      (let [test-data (-main)
-            test-out-string (:stdout test-data)]
-        (is (get-in test-data [:result :successful?]))
-        (is (= 1 (get-in test-data [:result :runs])))
+      (let [test-out-string (with-java-out-str (-main))]
         (is (.contains test-out-string "<DESCRIBE::>myTestFunction(TestFixture)"))
         (is (.contains test-out-string "test out"))
         (is (.contains test-out-string "<PASSED::>Test Passed<:LF:>"))))))
@@ -91,8 +84,7 @@
                       Foo s = new Foo();
                       assertEquals(\"Failed Message\", 5, s.testthing());
                       System.out.println(\"Shouldn't get here\");}}"})
-      (let [output (-main)
-            test-out-string (:stdout output)]
+      (let [test-out-string (with-java-out-str (-main))]
         (is (.contains test-out-string "<DESCRIBE::>sadPath(TestForFailure)<:LF:>"))
         (is (.contains test-out-string "<FAILED::>Failed Message expected:"))
         (is (.contains test-out-string "<5> but was:<3>"))
@@ -107,8 +99,8 @@
         :code "public class Code {
                      public static void main(String[] args){
                        notdefinedgonnafail(\"42\");}}"})
-      (let [error-message (:stderr (-main))]
-        (is (not (nil? error-message)))
+      (let [error-message
+            (with-redefs [core/fail #(-> % .getMessage)] (-main))]
         (is (.contains error-message "error: cannot find symbol"))
         (is (.contains error-message "notdefinedgonnafail(\"42\");"))
         (is (.contains error-message "symbol:   method notdefinedgonnafail(String)"))
@@ -133,7 +125,7 @@
                          Sollution s = new Sollution();
                          assertEquals(\"wow\", 3, s.testthingy());
                          System.out.println(\"test out\");}}"})
-      (let [test-out-string (:stdout (-main))]
+      (let [test-out-string (with-java-out-str (-main))]
         (is (.contains test-out-string "<DESCRIBE::>codeAndSetupAndFixture(NineYards)<:LF:>"))
         (is (.contains test-out-string "test out"))
         (is (.contains test-out-string "<PASSED::>Test Passed<:LF:>"))))))
@@ -153,6 +145,6 @@
                       Assert.assertEquals(\"The two values should multiply together\", 50, Java.multiply(10, 5));
                     }
                   }"})
-      (let [test-out-string (:stdout (-main))]
+      (let [test-out-string (with-java-out-str (-main))]
         (is (.contains test-out-string "<DESCRIBE::>testMultiply(JavaTest)<:LF:>"))
         (is (.contains test-out-string "<PASSED::>Test Passed<:LF:>"))))))

@@ -13,6 +13,5 @@
 (deftest nonsense-language
   (testing "An illegal argument exception will be emitted by main if an invalid language is passed"
     (with-in-str "{\"language\": \"blorg\"}"
-      (let [result (-main)]
-        (is (contains? result :stderr))
-        (is (.contains (:stderr result) "IllegalArgumentException"))))))
+      (with-redefs [core/fail #(throw %)]
+        (is (thrown? IllegalArgumentException (-main)))))))

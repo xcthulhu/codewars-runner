@@ -2,12 +2,12 @@
   (:require [codewars.runners :refer [code-only full-project]]
             [codewars.clojure.test]
             [clojure.java.io :as io]
-            [codewars.util :as util])
+            [codewars.util :refer [write-code!]])
   (:import [codewars.java TempDir]
            [java.net URLClassLoader]
            [javax.tools ToolProvider]
            [java.io ByteArrayOutputStream]
-           [org.junit.runner JUnitCore Result]
+           [org.junit.runner JUnitCore]
            [codewars.java CwRunListener]))
 
 (defn- compile!
@@ -30,8 +30,6 @@
   (let [class-loader
         (URLClassLoader/newInstance
          (into-array [(io/as-url dir)]))]
-    ;; TODO: Classes don't reload
-    ;; Try this: http://tutorials.jenkov.com/java-reflection/dynamic-class-loading-reloading.html
     (Class/forName (name class-name) true class-loader)))
 
 (defn- run-junit-tests
@@ -39,7 +37,8 @@
   [fixture-class]
   (let [runner (JUnitCore.)]
     (.addListener runner (CwRunListener.))
-    (.run runner (into-array [fixture-class]))))
+    (codewars.clojure.test/time
+     (.run runner (into-array [fixture-class])))))
 
 (defn- file-names
   "Filter a sequence of files writen by write-code! and output their names"
@@ -51,35 +50,23 @@
 (defmethod code-only "java"
   [{:keys [:setup :code]}]
   (let [dir (TempDir/create "java")
-        setup (when (not (empty? setup)) (util/write-code! "java" dir setup))
-        code (util/write-code! "java" dir code)
+        setup (when (not (empty? setup)) (write-code! "java" dir setup))
+        code (write-code! "java" dir code)
         files (file-names setup code)]
-    (try
-      (apply compile! files)
-      (-> code
-          :class-name
-          (->> (load-class dir))
-          (.getDeclaredMethod "main" (into-array [(Class/forName "[Ljava.lang.String;")]))
-          (doto (.setAccessible true))
-          (.invoke nil (into-array [(into-array String [])])))
-      (finally (TempDir/delete dir)))))
-
-(defn junit-result-to-map
-  [^Result result]
-  {:failures (.getFailureCount result)
-   :ignore (.getIgnoreCount result)
-   :runs (.getRunCount result)
-   :run-time (.getRunTime result)
-   :successful? (.wasSuccessful result)})
+    (apply compile! files)
+    (-> code
+        :class-name
+        (->> (load-class dir))
+        (.getDeclaredMethod "main" (into-array [(Class/forName "[Ljava.lang.String;")]))
+        (doto (.setAccessible true))
+        (.invoke nil (into-array [(into-array String [])])))))
 
 (defmethod full-project "java"
   [{:keys [:fixture :setup :code]}]
   (let [dir (TempDir/create "java")
-        fixture (util/write-code! "java" dir fixture)
-        setup (when (not (empty? setup)) (util/write-code! "java" dir setup))
-        code (util/write-code! "java" dir code)
+        fixture (write-code! "java" dir fixture)
+        setup (when (not (empty? setup)) (write-code! "java" dir setup))
+        code (write-code! "java" dir code)
         files (file-names fixture setup code)]
-    (try
-      (apply compile! files)
-      (->> fixture :class-name (load-class dir) run-junit-tests junit-result-to-map)
-      (finally (TempDir/delete dir)))))
+    (apply compile! files)
+    (->> fixture :class-name (load-class dir) run-junit-tests)))

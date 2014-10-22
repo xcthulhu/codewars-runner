@@ -7,7 +7,7 @@
   (:refer-clojure :exclude (add-classpath)))
 
 (defn- add-classpath
-  "Add a URL path to the system class loader"
+  "Add a url path to the system class loader"
   [new-classpath]
   (let [field (aget (.getDeclaredFields java.net.URLClassLoader) 0)]
     (.setAccessible field true)
@@ -16,19 +16,20 @@
 
 (defmethod code-only "clojure"
   [{:keys [:setup :code]}]
-  (when (not (empty? setup))
-    (load-string setup))
-  (load-string code))
+  (let [dir (TempDir/create "clojure")
+        code-file (io/file dir "code.clj")]
+    (when (not (empty? setup)) (util/write-code! "clojure" dir setup))
+    (spit code-file code)
+    (add-classpath dir)
+    (load-file (str code-file))))
 
 (defmethod full-project "clojure"
   [{:keys [:setup :code :fixture]}]
   (let [dir (TempDir/create "clojure")
         {fixture-ns :class-name}
         (util/write-code! "clojure" dir fixture)]
-    (try
-      (when (not (empty? setup)) (util/write-code! "clojure" dir setup))
-      (util/write-code! "clojure" dir code)
-      (add-classpath dir)
-      (require fixture-ns :reload-all)
-      (codewars.clojure.test/run-tests fixture-ns)
-      (finally (TempDir/delete dir)))))
+    (when (not (empty? setup)) (util/write-code! "clojure" dir setup))
+    (util/write-code! "clojure" dir code)
+    (add-classpath dir)
+    (require fixture-ns)
+    (codewars.clojure.test/run-tests fixture-ns)))
