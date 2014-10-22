@@ -4,5 +4,7 @@
 
 (defmethod code-only "groovy"
   [{:keys [:setup :code]}]
-    (when (not (nil? setup)) (throw (Exception. "Setup code is not supported")))
-    (.evaluate (GroovyShell.) code))
+  (let [shell (GroovyShell.)]
+    ;; TODO: Test setup code
+    (when (not (nil? setup)) (.evaluate shell setup))
+    (.evaluate shell code)))
