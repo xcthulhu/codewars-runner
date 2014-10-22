@@ -4,7 +4,6 @@
             [codewars.test.utils :refer :all]
             [cheshire.core :as json]))
 
-
 (deftest java-basic
   (testing "-main can handle a very basic java code and fixture"
     (with-in-str
@@ -21,7 +20,6 @@
        {:language "java"
         :code "class FooFighters { static int main(String [] args) {return 1;} }"})
       (is (= 1 (-main))))))
-
 
 (deftest java-code-print
   (testing "-main can handle a java code that prints to standard out"
