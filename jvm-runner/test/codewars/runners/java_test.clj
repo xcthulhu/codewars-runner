@@ -1,7 +1,7 @@
 (ns codewars.runners.java-test
   (:require [clojure.test :refer :all]
             [codewars.core :refer [-main] :as core]
-            [codewars.test.utils :refer :all]
+            [codewars.utils :refer :all]
             [cheshire.core :as json]))
 
 (deftest java-basic
@@ -19,7 +19,14 @@
       (json/generate-string
        {:language "java"
         :code "class FooFighters { static int main(String [] args) {return 1;} }"})
-      (is (= 1 (-main))))))
+      (is (= 1 (-main))))
+   (with-in-str
+      (json/generate-string
+       {:language "java"
+        :code "package bar.baz ; class FooFighters { static int main(String [] args) {return 7;} }"})
+      (is (= 7 (-main))))))
+
+
 
 (deftest java-code-print
   (testing "-main can handle a java code that prints to standard out"
@@ -127,6 +134,7 @@
         (is (.contains test-out-string "<DESCRIBE::>codeAndSetupAndFixture(NineYards)<:LF:>"))
         (is (.contains test-out-string "test out"))
         (is (.contains test-out-string "<PASSED::>Test Passed<:LF:>"))))))
+
 
 (deftest codewars-kumite-test
   (testing "Can handle a simple static export"

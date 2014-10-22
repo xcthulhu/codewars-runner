@@ -1,4 +1,4 @@
-(ns codewars.test.utils
+(ns codewars.utils
   "A small collection of utilities for testing"
   (:import [java.io PrintStream ByteArrayOutputStream StringWriter]))
 
@@ -19,6 +19,18 @@
      (with-redefs [*out* s#]
        ~@body
        (str s#))))
+
+(defmacro with-all-out-str
+  "A version of clojure.core/with-out-str suitable for wrapping java's System.out"
+  [& body]
+  `(let [original-out# (PrintStream. System/out)
+         byte-out# (ByteArrayOutputStream.)
+         s# (StringWriter.)]
+     (binding [*out* s#]
+       (-> byte-out# (PrintStream.) System/setOut)
+       ~@body
+       (System/setOut original-out#)
+       (str byte-out# s#))))
 
 (defmacro with-err-str
   "A version of clojure.core/with-out-str for *err*"

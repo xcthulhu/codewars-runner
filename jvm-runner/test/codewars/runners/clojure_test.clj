@@ -1,7 +1,7 @@
 (ns codewars.runners.clojure-test
   (:require [clojure.test :refer :all]
             [codewars.core :refer [-main] :as core]
-            [codewars.test.utils :refer [with-out-str-not-thread-safe]]
+            [codewars.utils :refer [with-out-str-not-thread-safe]]
             [cheshire.core :as json]
             [codewars.clojure.test])
   (:import [java.util.concurrent TimeoutException]))

@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [cheshire.core :as json]
             [codewars.core :refer [-main] :as core]
-            [codewars.test.utils :refer [with-java-out-str]]))
+            [codewars.utils :refer [with-java-out-str]]))
 
 (deftest groovy-code-only
   (testing "-main can handle a groovy code with no fixture"

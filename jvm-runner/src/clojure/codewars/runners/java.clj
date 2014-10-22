@@ -67,12 +67,13 @@
         (get (swap! class-codes assoc [class-name kind] (byte-code-file class-name kind))
              [class-name kind])))))
 
+(def ^:private compiler (ToolProvider/getSystemJavaCompiler))
+
+(def ^:private file-manager (byte-code-manager (.getStandardFileManager compiler nil nil nil)))
+
 (defn compile-and-load
   [class-name & codes]
-  (let [compiler (ToolProvider/getSystemJavaCompiler)
-        file-manager (byte-code-manager (.getStandardFileManager compiler nil nil nil))
-        files (map source-code-file codes)
-        ]
+  (let [files (map source-code-file codes)]
     (with-open [err-stream (ByteArrayOutputStream.)]
       (if(-> compiler (.getTask (PrintWriter. err-stream) file-manager nil nil nil files) .call)
         (-> file-manager (.getClassLoader nil) (.loadClass class-name))

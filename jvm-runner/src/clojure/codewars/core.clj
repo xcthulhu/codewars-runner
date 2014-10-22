@@ -3,6 +3,7 @@
             [codewars.runners :refer [run]]
             [codewars.kill-switch :refer [with-timeout]]
             [environ.core :refer [env]]
+            [codewars.warm-up :refer [warm-up]]
             [codewars.runners.groovy]
             [codewars.runners.clojure]
             [codewars.runners.java])
@@ -31,6 +32,7 @@
   "Listens to *in* for a JSON message, parses it and calls the appropriate runner"
   [& args]
   (when (not (empty? args))
+    (warm-up)
     (apply println args)
     (flush))
   (let [input (json/parse-stream *in* true)]
