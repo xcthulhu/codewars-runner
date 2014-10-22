@@ -2,11 +2,11 @@
   (:require [codewars.runners :refer [code-only full-project]]
             [codewars.clojure.test])
   (:import
-           [javax.tools ToolProvider SimpleJavaFileObject SimpleJavaFileObject ForwardingJavaFileManager]
-           [java.net URI]
-           [java.io PrintWriter ByteArrayOutputStream]
-           [org.junit.runner JUnitCore]
-           [codewars.java CwRunListener]))
+   [javax.tools ToolProvider SimpleJavaFileObject SimpleJavaFileObject ForwardingJavaFileManager]
+   [java.net URI]
+   [java.io PrintWriter ByteArrayOutputStream]
+   [org.junit.runner JUnitCore]
+   [codewars.java CwRunListener]))
 
 (defn class-name
   "Determine the class name of some java code (include package)"
@@ -58,7 +58,12 @@
               ;; TODO: Such hacks... :(
               (let [byte-code (.toByteArray (.openOutputStream byte-data))]
                 (proxy-super defineClass class-name byte-code nil))
-                (throw (java.lang.ClassNotFoundException. (str "Could not find " [class-name class-kind] " among possibilities: " (keys @class-codes)))))))]
+              (throw
+               (java.lang.ClassNotFoundException.
+                (str "Could not find "
+                     [class-name class-kind]
+                     " among possibilities: "
+                     (keys @class-codes)))))))]
     (proxy
         [ForwardingJavaFileManager]
         [standard-manager]
