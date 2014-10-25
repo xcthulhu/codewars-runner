@@ -26,7 +26,7 @@ RUN su codewarrior -c "cd ; cabal install cabal"
 
 # Install Haskell Packages
 RUN apt-get -y install libghc-zlib-dev pkg-config happy
-RUN su codewarrior -c "cd ; cabal install hspec esqueleto persistent-sqlite persistent-template zeromq4-haskell haskell-src-exts lens"
+RUN su codewarrior -c "cd ; cabal install hspec-1.12.1 esqueleto persistent-sqlite persistent-template zeromq4-haskell haskell-src-exts lens"
 
 # ADD cli-runner and install node deps
 ADD . /codewars
