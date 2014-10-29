@@ -7,11 +7,13 @@ ALL_IMAGES=${IMAGES} base
 all: ${IMAGES}
 
 base:
-	cd .. ; docker build -t codewars/runner-$@ - < docker/$@.docker
+	cp $@.docker ../Dockerfile
+	cd .. ; docker build -t codewars/runner-$@ .
 	make docker_rm_exited docker_rmi_temporary
 
 ${IMAGES}: base
-	cd .. ; docker build -t codewars/runner-$@ - < docker/$@.docker
+	cp $@.docker ../Dockerfile
+	cd .. ; docker build -t codewars/runner-$@ .
 	make docker_rm_exited docker_rmi_temporary
 
 # Remove docker processes that have exited cleanly
