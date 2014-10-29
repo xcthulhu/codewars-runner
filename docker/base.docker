@@ -35,7 +35,7 @@ RUN su codewarrior -c "echo '\n# Node.js\nexport PATH=\"/codewars/node_modules/.
 RUN apt-get install -y redis-server
 
 # Install MongoDB
-RUN apt-get install -y mongodb-server mongodb-client && \
+RUN apt-get install -y mongodb-server mongodb-clients && \
     mkdir -p /data/db && \
     chown codewarrior:codewarrior /data/db
 
