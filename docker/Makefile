@@ -13,9 +13,13 @@ base:
 ${IMAGES}: base
 	cp $@.docker ../Dockerfile
 	cd .. ; docker build -t codewars/runner-$@ .
-	make docker_rmi_temporary
+	make docker_rm_exited docker_rmi_temporary
 
-# Kill temporary built images
+# Remove docker processes that have exited cleanly
+docker_rm_exited:
+	[ ! -n "$(shell docker ps -a | grep Exit | cut -d ' ' -f 1)" ] || echo $(shell docker ps -a | grep Exit | cut -d ' ' -f 1) | xargs -n 1 docker rm -f
+
+# Kill temporary built images might fail if not exited cleanly
 docker_rmi_temporary:
 	[ ! -n "$(shell docker images --no-trunc | grep none | sed -e 's/\s\s*/\t/g' | cut -f3)" ] || docker images --no-trunc | grep none | sed -e 's/\s\s*/\t/g' | cut -f3 | xargs -n 1 docker rmi -f
 
