@@ -14,8 +14,8 @@ RUN sudo apt-get install -y python-pip python-numpy python-scipy python-pandas
 RUN sudo apt-get install -y python3-pip python3-numpy python3-scipy python3-pandas
 
 # Install Packages
-RUN pip install pymongo redis pyzmq
-RUN pip3 install pymongo redis pyzmq
+RUN pip install pyzmq
+RUN pip3 install pyzmq
 
 # ADD cli-runner and install node deps
 ADD . /codewars
