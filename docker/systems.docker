@@ -4,7 +4,7 @@
 
 
 # Pull base image.
-FROM codewars/runner-base
+FROM codewars/base
 
 # Install Tiny C Compiler
 RUN apt-get -y install tcc

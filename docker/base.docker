@@ -52,11 +52,11 @@ RUN apt-get install -y rabbitmq-server
 # Install ZMQ
 RUN apt-get install -y libzmq3-dev
 
-# Install Python Basics
-RUN apt-get install -y python-software-properties
-
 # Install Node testing frameworks & additional frameworks
 RUN npm -g install chai mocha
 
 # Install pkg-config for things that need to compile from source
 RUN apt-get install -y pkg-config
+
+# Install Python Basics
+RUN apt-get install -y python-minimal

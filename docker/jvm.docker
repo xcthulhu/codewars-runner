@@ -3,7 +3,7 @@
 # RUN-USING:      docker run --rm --name=runner-jvm codewars/runner-jvm --help
 
 # Pull base image.
-FROM codewars/runner-base
+FROM codewars/base
 
 # Install Java 8
 # RUN apt-get install -y default-jre-headless default-jdk # default is OpenJDK6

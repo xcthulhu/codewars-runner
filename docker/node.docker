@@ -4,7 +4,7 @@
 # EXAMPLE USAGE:  docker run --rm codewars/runner-node run -l javascript -c "console.log(1+1)"
 
 # Pull base image.
-FROM codewars/runner-base
+FROM codewars/base
 
 # Install Haxe
 RUN apt-get install -y haxe
