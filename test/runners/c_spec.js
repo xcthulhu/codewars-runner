@@ -11,6 +11,7 @@ describe( 'c runner', function(){
                             ''].join('\n');
 
             runner.run({language: 'c', code: code}, function(buffer) {
+                console.log(buffer);
                 expect(buffer.stdout).to.equal("I think the next language codewars should support is PL/I.  Wikipedia says it\'s still used in production to this day; presumably in nursing homes?");
                 done();
             });
@@ -29,48 +30,9 @@ describe( 'c runner', function(){
                     '}',
                 ].join('\n')
             }, function (buffer) {
+                console.log(buffer);
                 expect(buffer.stdout).to.equal('25');
                 done();
-            });
-        });
-        describe('codewars test framework', function () {
-            it('should be able to run a basic test', function (done) {
-                runner.run({
-                    language: 'c',
-                    code: [
-                        'int square(int a) { return a * a ; }'
-                    ].join('\n'),
-                    fixture: [
-                        '#include <test.h>',
-                        'int square(int);',
-                        'int main() {',
-                        '  ASSERT_EQUALS(25,square(5));',
-                        '}'
-                    ].join('\n')
-                }, function (buffer) {
-                    console.log(buffer);
-                    expect(buffer.stdout).to.contain('<PASSED::>Test Passed');
-                    done();
-                });
-            });
-            it('should be able to run a basic test', function (done) {
-                runner.run({
-                    language: 'c',
-                    code: [
-                        'int square(int a) { return a * a ; }'
-                    ].join('\n'),
-                    fixture: [
-                        '#include <test.h>',
-                        'int square(int);',
-                        'int main() {',
-                        '  ASSERT_EQUALS(25,square(5));',
-                        '}'
-                    ].join('\n')
-                }, function (buffer) {
-                    console.log(buffer);
-                    expect(buffer.stdout).to.contain('<PASSED::>Test Passed');
-                    done();
-                });
             });
         });
     });
