@@ -31,4 +31,7 @@ docker_rm:
 docker_rmi: docker_rm
 	[ ! -n "$(shell docker images -q)" ] || docker images -q | xargs -n 1 docker rmi -f 
 
-clean: docker_rmi
+clean: docker_rm_exited docker_rmi_temporary
+	for i in $(shell for i in codewars/base $(patsubst %, codewars/%-runner, $(IMAGES)) ; do docker images | grep $$i | sed -e 's/\s\s*/\t/g' | cut -f1; done) ; do docker rmi -f $$i ; done
+
+deep-clean: docker_rmi
