@@ -8,12 +8,10 @@ all: ${IMAGES}
 base:
 	cp $@.docker ../Dockerfile
 	cd .. ; docker build -t codewars/$@ .
-	make docker_rm_exited docker_rmi_temporary
 
 ${IMAGES}: base
 	cp $@.docker ../Dockerfile
 	cd .. ; docker build -t codewars/$@-runner .
-	make docker_rm_exited docker_rmi_temporary
 
 # Remove docker processes that have exited cleanly
 docker_rm_exited:
