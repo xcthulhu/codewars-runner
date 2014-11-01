@@ -13,6 +13,7 @@ ${CONTAINERS}: base
 	cp $@.docker ../Dockerfile
 	cd .. ; docker build -t localhost/$@-runner .
 
+# Deploy docker containers to local registry
 deploy_to_local_registry:
 	docker push $(patsubst %, localhost/%-runner, $(CONTAINERS))
 
