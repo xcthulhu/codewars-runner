@@ -5,7 +5,7 @@
 #                 docker run --rm codewars/runner-python run -l python3 -c "print(1+1)"
 
 # Pull base image.
-FROM codewars/base
+FROM localhost/base
 
 # Install Additional Python libraries
 RUN sudo apt-get install -y python-pip python-numpy python-scipy python-pandas

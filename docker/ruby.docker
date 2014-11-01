@@ -4,7 +4,7 @@
 # EXAMPLE USAGE:  docker run --rm codewars/runner-ruby run -l ruby -c "puts 1+1"
 
 # Pull base image.
-FROM codewars/base
+FROM localhost/base
 
 #Install ruby
 RUN apt-add-repository -y ppa:brightbox/ruby-ng && \

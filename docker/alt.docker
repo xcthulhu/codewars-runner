@@ -3,7 +3,7 @@
 # RUN-USING:      docker run --rm codewars/runner-alt --help
 
 # Pull base image.
-FROM codewars/base
+FROM localhost/base
 
 # Install Julia
 # Julia is really slow, but v0.3 is okay (see http://stackoverflow.com/a/20566032)
