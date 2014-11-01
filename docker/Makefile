@@ -13,9 +13,9 @@ ${CONTAINERS}: base
 	cp $@.docker ../Dockerfile
 	cd .. ; docker build -t localhost/$@-runner .
 
-# Deploy docker containers to local registry
-deploy_to_local_registry:
-	docker push $(patsubst %, localhost/%-runner, $(CONTAINERS))
+# Push docker containers to local registry
+push_to_local_registry:
+	echo $(patsubst %, localhost/%-runner, $(CONTAINERS)) | xargs -n 1 docker push 
 
 # Remove docker processes that have exited cleanly
 docker_rm_exited:
