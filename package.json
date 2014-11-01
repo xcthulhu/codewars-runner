@@ -14,8 +14,6 @@
     "body-parser": "*",
     "chai": "1.9.x",
     "cli-color": "*",
-    "connect-timeout": "*",
-    "dockerode": "2.0.x",
     "mocha": "1.19.x",
     "nomnom": "1.6.x",
     "response-time": "*",
