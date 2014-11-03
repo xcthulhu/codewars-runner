@@ -3,7 +3,7 @@
 # RUN-USING:      docker run --rm --name=runner-dotnet codewars/runner-dotnet --help
 
 # Pull base image.
-FROM localhost/base
+FROM localhost:5000/base
 
 # Install Mono
 RUN apt-get install -y mono-complete

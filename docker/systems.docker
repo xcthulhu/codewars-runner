@@ -4,7 +4,7 @@
 
 
 # Pull base image.
-FROM localhost/base
+FROM localhost:5000/base
 
 # Install Tiny C Compiler
 RUN apt-get -y install tcc

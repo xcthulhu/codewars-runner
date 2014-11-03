@@ -3,7 +3,7 @@
 # RUN-USING:      docker run --rm --name=runner-func codewars/runner-func --help
 
 # Pull base image.
-FROM localhost/base
+FROM localhost:5000/base
 
 # Install Racket
 RUN apt-get -y install racket

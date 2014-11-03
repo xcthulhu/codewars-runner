@@ -4,25 +4,15 @@
 # EXAMPLE USAGE:  docker run --rm codewars/runner-node run -l javascript -c "console.log(1+1)"
 
 # Pull base image.
-FROM localhost/base
-
-# Install Haxe
-RUN apt-get install -y haxe
+FROM localhost:5000/base
 
 # Install Coffeescript
 RUN npm -g install coffee-script
 
 # Install TypeScript
 RUN npm -g install typescript
-
 RUN npm -g install chai mocha
-
-RUN npm -g install mongoose mongodb
-RUN npm -g install redis
-RUN npm -g install sqlite3
-RUN npm -g install elasticsearch
-RUN npm -g install zmq
-RUN npm -g install immutable
+RUN npm -g install exec-sync
 
 # ADD cli-runner and install node deps
 ADD . /codewars
@@ -36,7 +26,7 @@ USER codewarrior
 # Set environment variables
 ENV USER codewarrior
 ENV HOME /home/codewarrior
-RUN mocha -t 5000 test/runners/javascript_spec.js test/runners/coffeescript_spec.js test/runners/typescript_spec.js
+RUN mocha -t 5000 test/runners/{javascript,coffeescript,typescript}_spec.js
 
 #timeout is a fallback in case an error with node
 #prevents it from exiting properly

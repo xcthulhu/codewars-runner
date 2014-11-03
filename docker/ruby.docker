@@ -4,7 +4,7 @@
 # EXAMPLE USAGE:  docker run --rm codewars/runner-ruby run -l ruby -c "puts 1+1"
 
 # Pull base image.
-FROM localhost/base
+FROM localhost:5000/base
 
 #Install ruby
 RUN apt-add-repository -y ppa:brightbox/ruby-ng && \
@@ -24,40 +24,6 @@ RUN apt-add-repository -y ppa:brightbox/ruby-ng && \
         --slave /usr/bin/ri ri /usr/bin/ri2.1 && \
     update-alternatives --config ruby && \
     update-alternatives --display ruby
-
-## install Rspec
-RUN gem install rspec --no-ri --no-rdoc
-RUN gem install rspec-its --no-ri --no-rdoc
-
-#RUN gem install minitest --no-ri --no-rdoc
-
-# Install additional gems
-RUN gem install pry --no-ri --no-rdoc
-RUN gem install capybara --no-ri --no-rdoc
-RUN gem install rails --no-ri --no-rdoc
-RUN gem install concerning --no-ri --no-rdoc
-RUN gem install celluloid --no-ri --no-rdoc
-RUN gem install sinatra --no-ri --no-rdoc
-RUN gem install eventmachine --no-ri --no-rdoc
-RUN gem install timers --no-ri --no-rdoc
-RUN gem install factory_girl --no-ri --no-rdoc
-RUN gem install mongo --no-ri --no-rdoc
-RUN gem install mongoid --no-ri --no-rdoc
-RUN gem install redis --no-ri --no-rdoc
-RUN gem install elasticsearch --no-ri --no-rdoc
-RUN gem install nokogiri --no-ri --no-rdoc
-RUN gem install sequel --no-ri --no-rdoc
-RUN gem install webmock --no-ri --no-rdoc
-RUN gem install timecop --no-ri --no-rdoc
-RUN gem install ruby-graphviz --no-ri --no-rdoc
-RUN gem install googlecharts --no-ri --no-rdoc
-RUN gem install ffi-rzmq --no-ri --no-rdoc
-RUN gem install bunny --no-ri --no-rdoc
-RUN gem install amqp --no-ri --no-rdoc
-RUN gem install functional-ruby --no-ri --no-rdoc
-RUN gem install concurrent-ruby --no-ri --no-rdoc
-#RUN gem install gruff --no-ri --no-rdoc
-#RUN gem install chartkick --no-ri --no-rdoc
 
 # ADD cli-runner and install node deps
 ADD . /codewars

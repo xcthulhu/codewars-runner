@@ -34,20 +34,8 @@ RUN su codewarrior -c "echo '\n# Node.js\nexport PATH=\"/codewars/node_modules/.
 # Install Redis
 RUN apt-get install -y redis-server
 
-# Install MongoDB
-RUN apt-get install -y mongodb-server mongodb-clients && \
-    mkdir -p /data/db && \
-    chown codewarrior:codewarrior /data/db
-
 # Install SQLITE
 RUN apt-get install -y sqlite libsqlite3-dev
-
-# Install ElasticSearch
-RUN wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.1.deb && \
-    dpkg -i elasticsearch-1.1.1.deb
-
-# Install RabitMQ
-RUN apt-get install -y rabbitmq-server
 
 # Install ZMQ
 RUN apt-get install -y libzmq3-dev
