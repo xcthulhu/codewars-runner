@@ -25,6 +25,9 @@ RUN apt-add-repository -y ppa:brightbox/ruby-ng && \
     update-alternatives --config ruby && \
     update-alternatives --display ruby
 
+# Ruby Gems
+RUN gem install redis --no-ri --no-rdoc
+
 # ADD cli-runner and install node deps
 ADD . /codewars
 
